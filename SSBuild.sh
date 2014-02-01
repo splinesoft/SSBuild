@@ -19,26 +19,6 @@ function clean
     mkdir -p "$OUTPUT"
 }
 
-function set_app_version
-{
-    if [ -n "$MARKETINGVERSION" ]; then
-        cd $SRCROOT
-        /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null || failed "Failed setting marketing version"
-    fi
-
-    if [ -n "$BUILD_NUMBER" ]; then
-        cd $SRCROOT
-        /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null || failed "Failed setting build number"
-    fi
-}
-
-function ss_unlock_keychain
-{
-    /usr/bin/security list-keychains -s "$BUILD_KEYCHAIN"
-    /usr/bin/security default-keychain -d user -s "$BUILD_KEYCHAIN"
-    /usr/bin/security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
-}
-
 function uuid_from_profile
 {
     echo `grep -aA1 UUID "$1" | grep -o "[-A-Z0-9]\{36\}"`
@@ -94,12 +74,22 @@ function xc_package
     # set marketing and build version
     
     echo "Updating App version..."
-    set_app_version &> /dev/null || failed "Failed updating app version"
+    if [ -n "$MARKETINGVERSION" ]; then
+        cd $SRCROOT
+        /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null || failed "Failed setting marketing version"
+    fi
+    
+    if [ -n "$BUILD_NUMBER" ]; then
+        cd $SRCROOT
+        /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null || failed "Failed setting build number"
+    fi
     
     # unlock keychain
     
     echo "Unlocking keychain..."
-    ss_unlock_keychain &> /dev/null || failed "Failed unlocking keychain"
+    /usr/bin/security list-keychains -s "$BUILD_KEYCHAIN"
+    /usr/bin/security default-keychain -d user -s "$BUILD_KEYCHAIN"
+    /usr/bin/security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
     
     # Calculated paths
     
@@ -111,6 +101,7 @@ function xc_package
     # xcodebuild
     
     UUID=`uuid_from_profile "$4"`
+    [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
     
     echo "Building!"
     cd $BUILDROOT && bundle exec xcodebuild \
@@ -141,16 +132,19 @@ set -e
 
 [ -n "$1" ] || failed "No config file specified!"
 
+# Location of this script
+export BUILDROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 . "$1" &> /dev/null
 
 [ -n "$BUILDROOT" ] || failed "No \$BUILDROOT specified!"
 
-echo "Installing bundle..."
-(cd $BUILDROOT && bundle install &> /dev/null) || failed "Failed installing bundle. Try running 'sudo bundle install'"
-
 ################
 # BEFORE CI
 ################
+
+echo "Installing bundle..."
+(cd $BUILDROOT && bundle install &> /dev/null) || failed "Failed installing bundle. Try running 'sudo bundle install'"
 
 # Remove output
 
