@@ -84,16 +84,21 @@ function install_profiles
 ##########
 function xc_package
 {
+    echo "Building scheme $3 with destination $1"
+    
     # cocoapods
     
-    (cd $SRCROOT && pod install --no-color) || failed "Failed pod install"
+    echo "Installing Cocoapods..."
+    (cd $SRCROOT && pod install --no-color &> /dev/null) || failed "Failed running 'pod install'"
     
     # set marketing and build version
     
+    echo "Updating App version..."
     set_app_version &> /dev/null || failed "Failed updating app version"
     
     # unlock keychain
     
+    echo "Unlocking keychain..."
     ss_unlock_keychain &> /dev/null || failed "Failed unlocking keychain"
     
     # Calculated paths
@@ -107,6 +112,7 @@ function xc_package
     
     UUID=`uuid_from_profile "$4"`
     
+    echo "Building!"
     cd $BUILDROOT && bundle exec xcodebuild \
     -workspace "$APPWORKSPACE" \
     -scheme "$3" \
@@ -119,6 +125,7 @@ function xc_package
     
     # IPA
     
+    echo "Packaging IPA..."
     /usr/bin/xcrun -sdk iphoneos \
     PackageApplication $APP_APP \
     -o $APP_IPA \
@@ -126,6 +133,7 @@ function xc_package
     
     # ZIP dSYM
     
+    echo "Zipping .dSYM..."
     /usr/bin/zip -qr "$APP_DSYM_ZIP" "$APP_DSYM"
 }
 
@@ -137,7 +145,8 @@ set -e
 
 [ -n "$BUILDROOT" ] || failed "No \$BUILDROOT specified!"
 
-cd $BUILDROOT && bundle install
+echo "Installing bundle..."
+(cd $BUILDROOT && bundle install &> /dev/null) || failed "Failed installing bundle. Try running 'sudo bundle install'"
 
 ################
 # BEFORE CI
@@ -145,11 +154,13 @@ cd $BUILDROOT && bundle install
 
 # Remove output
 
+echo "Cleaning output..."
 clean &> /dev/null || failed "Failed clean"
 
 # install distribution profiles
 
-install_profiles &> /dev/null || failed "Failed installing profiles"
+echo "Installing distribution provisioning profiles..."
+install_profiles || failed "Failed installing profiles"
 
 ################
 # RELEASE
