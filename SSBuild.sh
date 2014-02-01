@@ -23,13 +23,11 @@ function set_app_version
 {
     if [ -n "$MARKETINGVERSION" ]; then
         cd $SRCROOT
-        echo "Setting Marketing Version $MARKETINGVERSION"
         /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null || failed "Failed setting marketing version"
     fi
 
     if [ -n "$BUILD_NUMBER" ]; then
         cd $SRCROOT
-        echo "Setting Build Version $BUILD_NUMBER"
         /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null || failed "Failed setting build number"
     fi
 }
@@ -88,12 +86,11 @@ function xc_package
 {
     # cocoapods
     
-    cd "$SRCROOT"
-    pod install --no-color || failed "Failed pod install"
+    (cd $SRCROOT && pod install --no-color) || failed "Failed pod install"
     
     # set marketing and build version
     
-    set_app_version
+    set_app_version &> /dev/null || failed "Failed updating app version"
     
     # unlock keychain
     
@@ -110,7 +107,7 @@ function xc_package
     
     UUID=`uuid_from_profile "$4"`
     
-    xcodebuild \
+    cd $BUILDROOT && bundle exec xcodebuild \
     -workspace "$APPWORKSPACE" \
     -scheme "$3" \
     clean build \
@@ -137,6 +134,10 @@ set -e
 [ -n "$1" ] || failed "No config file specified!"
 
 . "$1" &> /dev/null
+
+[ -n "$BUILDROOT" ] || failed "No \$BUILDROOT specified!"
+
+cd $BUILDROOT && bundle install
 
 ################
 # BEFORE CI

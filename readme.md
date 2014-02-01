@@ -4,13 +4,13 @@ A bash script that builds, codesigns, and archives your iOS app. Works great on 
 
 SSBuild performs these steps:
 
-1. Downloads and installs your distribution provisioning profiles from Apple's Developer Center using [Cupertino](https://github.com/nomad/cupertino)
-2. Installs your [Cocoapods](http://cocoapods.org) via `pod install`
+1. Downloads and installs your distribution provisioning profiles from Apple's Developer Center
+2. Installs your [Cocoapods](http://cocoapods.org)
 3. Unlocks the OS X keychain to prepare for code signing
 4. Builds, codesigns, and archives your app into an IPA
 5. Zips your app's .dSYM.
 6. (Optional) Repeats steps 2-5 for an Adhoc (Testflight/Hockeyapp) build
-7. (Optional) Archive important build artifacts -- your IPA and .dSYM -- and upload them to Amazon S3
+7. (Optional) Archives important build artifacts -- your IPA and .dSYM -- and uploads them to Amazon S3
 
 The fun doesn't stop there. Read on to see how to configure Jenkins for even more goodness:
 
@@ -18,7 +18,6 @@ The fun doesn't stop there. Read on to see how to configure Jenkins for even mor
 * Send a push notification to your iOS devices with the ultimate outcome of all previous steps - success or failure.
 
 SSBuild powers continuous integration, packaging, archiving, Adhoc distributions, and notifications for my app [MUDRammer - A Modern MUD Client for iPhone and iPad](https://itunes.apple.com/us/app/mudrammer-a-modern-mud-client/id597157072?mt=8).
-
 
 ## Why?
 
@@ -36,7 +35,6 @@ CI means clicking literally one button and out pops your IPA, ready to be submit
 
 You can also install `cupertino`, `cocoapods`, and `xcpretty` with the included `Gemfile`.
 
-
 ## Getting Started
 
 Make sure you have the above requirements in place. You'll need 3 things to get started:
@@ -50,11 +48,13 @@ Keep in mind that your `MyApp.config` file **CONTAINS SECRETS** and **SHOULD NOT
 
 ## Building
 
-The `SSBuild.sh` script takes just one argument: the path to your `MyApp.config` file. Here's how you might run it in Terminal.app:
+The `SSBuild.sh` script takes just one argument: the path to your `MyApp.config` file. Here's how you might run it:
 
 ```
-/bin/bash -xe "SSBuild.sh" "/path/to/MyApp.config"
+./SSBuild.sh "/path/to/MyApp.config"
 ```
+
+You may have some custom build steps or requirements. SSBuild is meant to be forked - make it your own!
 
 ## Jenkins Mastery
 
