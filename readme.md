@@ -10,7 +10,7 @@ SSBuild performs these steps:
 4. Unlocks the OS X keychain to prepare for code signing
 5. Builds, codesigns, and archives your app into an IPA
 6. Zips your app's .dSYM.
-7. (Optional) Repeats steps 2-5 for an Adhoc (Testflight/Hockeyapp) build
+7. (Optional) Repeats steps 2-6 for an Adhoc (Testflight/Hockeyapp) build
 8. (Optional) Archives important build artifacts -- your IPA and .dSYM -- and uploads them to Amazon S3
 
 The fun doesn't stop there. Read on to see how to configure Jenkins for even more goodness:
