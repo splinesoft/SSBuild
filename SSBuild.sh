@@ -80,7 +80,7 @@ function install_profiles
 ##########
 function xc_package
 {
-    echo "Building scheme $3 with destination $1"
+    echo "Building scheme \"$3\" -> $1"
     
     # cocoapods
     
@@ -89,15 +89,18 @@ function xc_package
     
     # set marketing and build version
     
-    echo "Updating App version..."
     if [ -n "$MARKETINGVERSION" ]; then
-        cd $SRCROOT
-        /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null || failed "Failed setting marketing version"
+        echo "Setting App marketing version $MARKETINGVERSION..."
+        (cd $SRCROOT && /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null) || failed "Failed setting marketing version"
+    else
+        echo "Skipping setting marketing version. Specify \$MARKETINGVERSION in your App.config."
     fi
     
     if [ -n "$BUILD_NUMBER" ]; then
-        cd $SRCROOT
-        /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null || failed "Failed setting build number"
+        echo "Setting build number $BUILD_NUMBER..."
+        (cd $SRCROOT && /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null) || failed "Failed setting build number"
+    else
+        echo "Skipping setting build number. Specify \$BUILD_NUMBER."
     fi
     
     # unlock keychain
@@ -155,6 +158,8 @@ export BUILDROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 [ -n "$BUILDROOT" ] || failed "No \$BUILDROOT specified!"
 
+echo "Building $APPNAME in $SRCROOT."
+
 ################
 # BEFORE CI
 ################
@@ -169,8 +174,10 @@ clean &> /dev/null || failed "Failed clean"
 
 # install distribution profiles
 
-echo "Installing distribution provisioning profiles..."
-install_profiles || failed "Failed installing profiles"
+if [ -n "$JENKINS_PROFILES" ] && [ -n "$APPLE_UN" ]; then
+    echo "Installing distribution provisioning profiles for $APPLE_UN..."
+    install_profiles || failed "Failed installing profiles"
+fi
 
 ################
 # RELEASE
