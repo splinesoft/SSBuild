@@ -2,8 +2,24 @@
 
 #
 # SSBuild - a script to build your iOS app.
-# By splinesoft.net.
+# https://github.com/splinesoft/SSBuild
 #
+# SSBuild performs these steps:
+#
+# Downloads and installs your distribution provisioning profiles from Apple's Developer Center
+# Installs your Cocoapods
+# Updates your app's major (marketing) and minor (build) numbers
+# Unlocks the OS X keychain to prepare for code signing
+# Builds, codesigns, and archives your app into an IPA
+# Zips your app's .dSYM.
+# (Optional) Repeats steps 2-5 for an Adhoc (Testflight/Hockeyapp) build
+# (Optional) Archives important build artifacts -- your IPA and .dSYM -- and uploads them to Amazon S3
+#
+# The SSBuild.sh script takes just one argument: 
+# the path to your MyApp.config file. 
+# Here's how you might run it:
+#
+# ./SSBuild.sh "/path/to/MyApp.config"
 
 function failed
 {
@@ -89,7 +105,7 @@ function xc_package
     echo "Unlocking keychain..."
     /usr/bin/security list-keychains -s "$BUILD_KEYCHAIN"
     /usr/bin/security default-keychain -d user -s "$BUILD_KEYCHAIN"
-    /usr/bin/security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
+    /usr/bin/security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" &> /dev/null || failed "Failed unlocking keychain"
     
     # Calculated paths
     
@@ -160,16 +176,14 @@ install_profiles || failed "Failed installing profiles"
 # RELEASE
 ################
 
-if [ -n "$OUTPUT_RELEASE" ]; then     
-    # BUILD RELEASE
-    
+if [ -n "$OUTPUT_RELEASE" ]; then         
     xc_package \
     "$OUTPUT_RELEASE" \
     "$RELEASE_DEFINES" \
     "$SCHEME_RELEASE" \
     "$ProvisionRelease"
 else
-    failed "Did you specifiy a release output location?"
+    failed "Did you specify a release output location?"
 fi
 
 #####################
@@ -177,11 +191,9 @@ fi
 #####################
 
 if [ -n "$OUTPUT_ADHOC" ]; then
+    
     # add testflight sdk to podfile
-    cd $SRCROOT
-    echo "pod 'ARAnalytics/TestFlight'" >> Podfile
-
-    # xctool ADHOC
+    echo "pod 'ARAnalytics/TestFlight'" >> $SRCROOT/Podfile
     
     xc_package \
     "$OUTPUT_ADHOC" \
@@ -189,12 +201,13 @@ if [ -n "$OUTPUT_ADHOC" ]; then
     "$SCHEME_ADHOC" \
     "$ProvisionAdhoc"
     
-    # Testflight upload with Shenzhen
+    # I prefer to upload builds to Testflight with Jenkins
+    # because the Jenkins-Testflight plugin can include
+    # your recent commit history in the build notes.
+    #
+    # You could also upload to Testflight with Shenzen:
     # https://github.com/nomad/shenzhen
-    
-    # I use the TF plugin for Jenkins, which can include build changes.
-    # Haven't been able to find an easy way to include build changes otherwise
-    
+    #
     #ipa distribute:testflight \
     #-f IPA file \
     #-d dSYM.zip file \
