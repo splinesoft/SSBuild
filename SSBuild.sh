@@ -87,22 +87,6 @@ function xc_package
     echo "Installing Cocoapods..."
     (cd $SRCROOT && pod install --no-color &> /dev/null) || failed "Failed running 'pod install'"
     
-    # set marketing and build version
-    
-    if [ -n "$MARKETINGVERSION" ]; then
-        echo "Setting App marketing version $MARKETINGVERSION..."
-        (cd $SRCROOT && /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null) || failed "Failed setting marketing version"
-    else
-        echo "Skipping setting marketing version. Specify \$MARKETINGVERSION in your App.config."
-    fi
-    
-    if [ -n "$BUILD_NUMBER" ]; then
-        echo "Setting build number $BUILD_NUMBER..."
-        (cd $SRCROOT && /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null) || failed "Failed setting build number"
-    else
-        echo "Skipping setting build number. Specify \$BUILD_NUMBER."
-    fi
-    
     # unlock keychain
     
     echo "Unlocking keychain..."
@@ -160,9 +144,9 @@ export BUILDROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "Building $APPNAME in $SRCROOT."
 
-################
+###########
 # BEFORE CI
-################
+###########
 
 echo "Installing bundle..."
 (cd $BUILDROOT && bundle install &> /dev/null) || failed "Failed installing bundle. Try running 'sudo bundle install'"
@@ -179,9 +163,25 @@ if [ -n "$JENKINS_PROFILES" ] && [ -n "$APPLE_UN" ]; then
     install_profiles || failed "Failed installing profiles"
 fi
 
-################
-# RELEASE
-################
+# set marketing and build version
+
+if [ -n "$MARKETINGVERSION" ]; then
+    echo "Setting App marketing version $MARKETINGVERSION..."
+    (cd $SRCROOT && /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null) || failed "Failed setting marketing version"
+else
+    echo "Skipping setting marketing version. Specify \$MARKETINGVERSION in your App.config."
+fi
+
+if [ -n "$BUILD_NUMBER" ]; then
+    echo "Setting build number $BUILD_NUMBER..."
+    (cd $SRCROOT && /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null) || failed "Failed setting build number"
+else
+    echo "Skipping setting build number. Specify \$BUILD_NUMBER."
+fi
+
+###############
+# BUILD RELEASE
+###############
 
 if [ -n "$OUTPUT_RELEASE" ]; then         
     xc_package \
@@ -193,9 +193,9 @@ else
     failed "Did you specify a release output location?"
 fi
 
-#####################
-# TESTFLIGHT // ADHOC
-#####################
+###########################
+# BUILD ADHOC // TESTFLIGHT
+###########################
 
 if [ -n "$OUTPUT_ADHOC" ]; then
     
@@ -232,9 +232,9 @@ fi
 /usr/bin/security list-keychains -s ~/Library/Keychains/login.keychain
 /usr/bin/security default-keychain -d user -s ~/Library/Keychains/login.keychain
 
-#################
+############
 # S3 Archive
-#################
+############
 
 if [ -n "$S3_BUCKET" ]; then
     s3cmd sync -r \
