@@ -44,10 +44,10 @@ function install_profiles
 {
     # remove old profiles and download distribution profiles
     
-    if [ -n "$JENKINS_PROFILES" ] && [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
-        rm -rf "$JENKINS_PROFILES"
-        mkdir -p "$JENKINS_PROFILES"
-        cd "$JENKINS_PROFILES"
+    if [ -n "$PROVISIONING_PROFILES" ] && [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
+        rm -rf "$PROVISIONING_PROFILES"
+        mkdir -p "$PROVISIONING_PROFILES"
+        cd "$PROVISIONING_PROFILES"
     
         /usr/bin/ios profiles:download:all \
         --type distribution \
@@ -57,7 +57,7 @@ function install_profiles
         
         # copy provisioning profiles to user library
         
-        FILES=$JENKINS_PROFILES/*.mobileprovision
+        FILES=$PROVISIONING_PROFILES/*.mobileprovision
         
         for file in $FILES 
         do
@@ -158,7 +158,7 @@ clean &> /dev/null || failed "Failed clean"
 
 # install distribution profiles
 
-if [ -n "$JENKINS_PROFILES" ] && [ -n "$APPLE_UN" ]; then
+if [ -n "$PROVISIONING_PROFILES" ] && [ -n "$APPLE_UN" ]; then
     echo "Installing distribution provisioning profiles for $APPLE_UN..."
     install_profiles || failed "Failed installing profiles"
 fi
@@ -183,12 +183,12 @@ fi
 # BUILD RELEASE
 ###############
 
-if [ -n "$OUTPUT_RELEASE" ]; then         
+if [ -n "$RELEASE_OUTPUT" ]; then         
     xc_package \
-    "$OUTPUT_RELEASE" \
+    "$RELEASE_OUTPUT" \
     "$RELEASE_DEFINES" \
-    "$SCHEME_RELEASE" \
-    "$ProvisionRelease"
+    "$RELEASE_SCHEME" \
+    "$RELEASE_PROFILE"
 else
     failed "Did you specify a release output location?"
 fi
@@ -197,16 +197,16 @@ fi
 # BUILD ADHOC // TESTFLIGHT
 ###########################
 
-if [ -n "$OUTPUT_ADHOC" ]; then
+if [ -n "$ADHOC_OUTPUT" ]; then
     
     # add testflight sdk to podfile
     echo "pod 'ARAnalytics/TestFlight'" >> $SRCROOT/Podfile
     
     xc_package \
-    "$OUTPUT_ADHOC" \
+    "$ADHOC_OUTPUT" \
     "$ADHOC_DEFINES" \
-    "$SCHEME_ADHOC" \
-    "$ProvisionAdhoc"
+    "$ADHOC_SCHEME" \
+    "$ADHOC_PROFILE"
     
     # I prefer to upload builds to Testflight with Jenkins
     # because the Jenkins-Testflight plugin can include
