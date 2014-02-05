@@ -53,7 +53,7 @@ Keep in mind that your `MyApp.config` file **CONTAINS SECRETS** and **SHOULD NOT
 
 The `SSBuild.sh` script takes just one argument: the path to your `MyApp.config` file. Here's how you might run it:
 
-```
+```bash
 ./SSBuild.sh "/path/to/MyApp.config"
 ```
 
@@ -73,7 +73,7 @@ My Jenkins server sends me a push notification with the result of every build. T
 
 The pushover script itself is super simple:
 
-```
+```bash
 curl -s \
 	-F "token=PushoverToken" \
 	-F "user=Pushover-User-Or-Group" \
