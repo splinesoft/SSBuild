@@ -6,13 +6,13 @@
 #
 # SSBuild performs these steps:
 #
-# Downloads and installs your distribution provisioning profiles from Apple's Developer Center
-# Installs your Cocoapods
-# Updates your app's major (marketing) and minor (build) numbers
-# Unlocks the OS X keychain to prepare for code signing
-# Builds, codesigns, and archives your app into an IPA
-# Zips your app's .dSYM.
-# (Optional) Repeats steps 2-5 for an Adhoc (Testflight/Hockeyapp) build
+# 1. Downloads and installs your distribution provisioning profiles from Apple's Developer Center
+# 2. Updates your app's major (marketing) and minor (build) version numbers
+# 3. Installs your Cocoapods
+# 4. Unlocks the OS X keychain to prepare for code signing
+# 5. Builds, codesigns, and archives your app into an IPA
+# 6. Zips your app's .dSYM.
+# (Optional) Repeats steps 3-6 for an Adhoc (Testflight/Hockeyapp) build
 # (Optional) Archives important build artifacts -- your IPA and .dSYM -- and uploads them to Amazon S3
 #
 # The SSBuild.sh script takes just one argument: 
