@@ -24,7 +24,7 @@ You may have some custom build steps or requirements. SSBuild is meant to be for
 
 ## Why?
 
-Continuous integration means knowing your app is always in a releasable state. Even if you don't have functional or integration tests, and regardless whether you're an indie solo developer or a massive faceless megacorp, CI will save you hours of time. With CI, you spend less time mucking about with build tools and more time coding.
+Continuous integration means knowing your app is always in a releasable state. Even if you don't have or integration or UI tests, and regardless whether you're an indie solo developer or a massive faceless megacorp, CI will save you hours of time. With CI you need not muck about with provisioning profiles, you completely sidestep codesigning hell, and you spend more time coding.
 
 CI means clicking one button and out pops your IPA, ready to be submitted to Apple.
 
