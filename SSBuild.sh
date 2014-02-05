@@ -134,6 +134,7 @@ function xc_package
 set -e
 
 [ -n "$1" ] || failed "No config file specified!"
+[ -e "$1" ] || failed "Config file \"$1\" does not exist or is unreadable."
 
 # Location of this script
 export BUILDROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
