@@ -23,7 +23,9 @@
 
 function failed
 {
-    echo "$1" 1>&2
+    echo ""
+    echo "=> $1" 1>&2
+    echo ""
     exit 1
 }
 
@@ -80,7 +82,7 @@ function install_profiles
 ##########
 function xc_package
 {
-    echo "Building scheme \"$3\" -> $1"
+    echo "Building scheme \"$3\" => $1"
     
     # cocoapods
     
