@@ -117,7 +117,7 @@ function xc_package
     PROVISIONING_PROFILE="$UUID" \
     CODE_SIGN_IDENTITY="$CODESIGN_ID" \
     OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
-    GCC_PREPROCESSOR_DEFINITIONS="$2" | xcpretty -s --no-utf || failed "Failed building"
+    GCC_PREPROCESSOR_DEFINITIONS="$2" | xcpretty -s || failed "Failed building"
     
     # IPA
     

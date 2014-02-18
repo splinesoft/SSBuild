@@ -38,18 +38,13 @@ CI means clicking one button and out pops your IPA, ready to be submitted to App
 
 SSBuild will attempt to install `cupertino`, `cocoapods`, and `xcpretty` with the included `Gemfile`.
 
-## Getting Started
-
-Make sure you have the above requirements in place. You'll need 3 things to get started:
-
-* The `SSBuild.sh` script from this repo
-* A config file for your app. Check out the sample `MyApp.config` and modify it to suit your needs.
-* Location of and password to a keychain containing your codesigning certificate and private key. Chances are you already have these items in your user's main login keychain. Consider creating a new keychain file (Keychain Access -> File -> New Keychain...) that contains just your iOS certificate and private key.
-
-Keep in mind that your `MyApp.config` file **CONTAINS SECRETS** and **SHOULD NOT BE CHECKED INTO VERSION CONTROL**.
-
-
 ## Building
+
+You'll need 3 things to get started:
+
+1. The `SSBuild.sh` script from this repo
+2. A config file for your app. Check out the sample `MyApp.config` and modify it to suit your needs. Keep in mind that your `MyApp.config` file **CONTAINS SECRETS** and **SHOULD NOT BE CHECKED INTO VERSION CONTROL**.
+3. Location of and password to a keychain containing your codesigning certificate and private key. Chances are you already have these items in your user's main login keychain. Consider creating a new keychain file (Keychain Access -> File -> New Keychain...) that contains just your iOS codesigning identity and private key. Make sure to password-protect your new keychain and consider checking it into version control.
 
 The `SSBuild.sh` script takes just one argument: the path to your `MyApp.config` file. Here's how you might run it:
 
