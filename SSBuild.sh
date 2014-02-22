@@ -67,7 +67,7 @@ function install_profiles
             
             [ -n "$PROFILE_UUID" ] || failed "No UUID found in $file"
             
-            cp "$file" $HOME/Library/MobileDevice/Provisioning\ Profiles/${PROFILE_UUID}.mobileprovision || failed "Failed installing $file"
+            cp "$file" "$HOME/Library/MobileDevice/Provisioning Profiles/${PROFILE_UUID}.mobileprovision" || failed "Failed installing $file"
         done
     fi
 }
