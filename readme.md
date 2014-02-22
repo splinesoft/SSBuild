@@ -24,7 +24,7 @@ You may have some custom build steps or requirements. SSBuild is meant to be for
 
 ## Why?
 
-Continuous integration means knowing your app is always in a releasable state. Even if you don't have or integration or UI tests, and regardless whether you're an indie solo developer or a massive faceless megacorp, CI will save you hours of time. With CI you need not muck about with provisioning profiles, you completely sidestep codesigning hell, and you spend more time coding.
+Continuous integration means knowing your app is always in a releasable state. You need not muck about with provisioning profiles, you completely sidestep codesigning hell, and you spend more time coding.
 
 CI means clicking one button and out pops your IPA, ready to be submitted to Apple.
 
@@ -62,9 +62,7 @@ I use the [Jenkins Testflight](https://wiki.jenkins-ci.org/display/JENKINS/Testf
 
 ### Build Status Push Notifications
 
-My Jenkins server sends me a push notification with the result of every build. There's a few pieces involved:
-
-* [Pushover](https://pushover.net/) is a fantastic iOS app and web service for sending push notifications to your devices.
+My Jenkins server sends me a push notification with the result of every build. This is powered by [Pushover](https://pushover.net/), a fantastic iOS app and web service for sending push notifications to your devices.
 
 The pushover script itself is super simple:
 
@@ -72,12 +70,12 @@ The pushover script itself is super simple:
 curl -s \
 	-F "token=PushoverToken" \
 	-F "user=Pushover-User-Or-Group" \
-	-F "message=Hello world" \
-	-F "url=My-Build-URL" \
+	-F "message=$JOB_NAME $BUILD_DISPLAY_NAME succeeded." \
+	-F "url=$BUILD_URL" \
 	https://api.pushover.net/1/messages.json
 ```
 
-Ideally we want our push notification's message to include the final result status of our build. I've wired this up through the use of two separate post-build scripts, so each build fires only one success or failure script depending on its status.
+Ideally we want our push notification's message to include the final result status of our build. I've wired this up through the use of two separate post-build scripts; one each for build success and failure.
 
 * [Hudson Post-build Task](http://wiki.hudson-ci.org/display/HUDSON/Post+build+task)
 * [Jenkins Post-Build script](http://wiki.jenkins-ci.org/display/JENKINS/PostBuildScript+Plugin)
