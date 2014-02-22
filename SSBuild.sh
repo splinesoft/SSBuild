@@ -46,29 +46,31 @@ function install_profiles
 {
     # remove old profiles and download distribution profiles
     
-    if [ -n "$PROVISIONING_PROFILES" ] && [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
-        rm -rf "$PROVISIONING_PROFILES"
-        mkdir -p "$PROVISIONING_PROFILES"
-        cd "$PROVISIONING_PROFILES"
-    
-        /usr/bin/ios profiles:download:all \
+    if [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
+        
+        (cd $BUILDROOT && bundle exec ios profiles:download:all \
         --type distribution \
         -u "$APPLE_UN" \
         -p "$APPLE_PW" \
-        &> /dev/null || failed "Failed Downloading Profiles"
+        &> /dev/null) || failed "Failed downloading profiles"
         
         # copy provisioning profiles to user library
         
-        FILES=$PROVISIONING_PROFILES/*.mobileprovision
+        PROFILES=$BUILDROOT/*.mobileprovision*
         
-        for file in $FILES 
+        for file in $PROFILES 
         do
             PROFILE_UUID=`uuid_from_profile $file`
             
-            [ -n "$PROFILE_UUID" ] || failed "No UUID found in $file"
-            
-            cp "$file" "$HOME/Library/MobileDevice/Provisioning Profiles/${PROFILE_UUID}.mobileprovision" || failed "Failed installing $file"
+            if [ -n "$PROFILE_UUID" ]; then             
+                echo "Installing profile $PROFILE_UUID"
+                cp "$file" "$HOME/Library/MobileDevice/Provisioning Profiles/${PROFILE_UUID}.mobileprovision" || failed "Failed installing $file"
+            else
+                echo "No UUID found in $file"
+            fi
         done
+    else
+        echo "Missing Apple username and password, not downloading profiles"
     fi
 }
 
@@ -102,10 +104,11 @@ function xc_package
     APP_APP="$1/$APPNAME.app"
     APP_DSYM="$1/$APPNAME.app.dSYM"
     APP_DSYM_ZIP="$1/$APPNAME.dSYM.zip"
+    PROFILE=$BUILDROOT/$4
     
     # xcodebuild
     
-    UUID=`uuid_from_profile "$4"`
+    UUID=`uuid_from_profile "$PROFILE"`
     [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
     
     echo "Building!"
@@ -125,7 +128,7 @@ function xc_package
     /usr/bin/xcrun -sdk iphoneos \
     PackageApplication $APP_APP \
     -o $APP_IPA \
-    --embed "$4" || failed "Failed packaging"
+    --embed "$PROFILE" || failed "Failed packaging"
     
     # ZIP dSYM
     
@@ -161,7 +164,7 @@ clean &> /dev/null || failed "Failed clean"
 
 # install distribution profiles
 
-if [ -n "$PROVISIONING_PROFILES" ] && [ -n "$APPLE_UN" ]; then
+if [ -n "$APPLE_UN" ]; then
     echo "Installing distribution provisioning profiles for $APPLE_UN..."
     install_profiles || failed "Failed installing profiles"
 fi
@@ -227,6 +230,23 @@ if [ -n "$ADHOC_OUTPUT" ]; then
 else
     echo "Skipping Adhoc build"
 fi
+
+###############
+# NUKE PROFILES
+###############
+
+# We destroy all downloaded provisioning profiles after every build.
+# Redownloading profiles for every build means that we can immediately 
+# capture any changes you've made in Apple's developer center.
+
+PROFILES=$BUILDROOT/*.mobileprovision*
+
+echo "Removing profiles..."
+
+for file in $PROFILES 
+do
+    rm $file
+done
 
 ##################
 # RESTORE KEYCHAIN
