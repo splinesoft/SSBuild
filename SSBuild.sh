@@ -104,7 +104,7 @@ function xc_package
     APP_APP="$1/$APPNAME.app"
     APP_DSYM="$1/$APPNAME.app.dSYM"
     APP_DSYM_ZIP="$1/$APPNAME.dSYM.zip"
-    PROFILE=$BUILDROOT/$4
+    PROFILE="$BUILDROOT/$4"
     
     # xcodebuild
     
