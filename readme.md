@@ -1,5 +1,7 @@
 # SSBuild
 
+[![Build Status](https://travis-ci.org/splinesoft/SSBuild.png?branch=master)](https://travis-ci.org/splinesoft/SSBuild) 
+
 A bash script that builds, codesigns, and archives your iOS app. Works great on its own or with a continuous integration tool like Jenkins.
 
 SSBuild performs these steps:
