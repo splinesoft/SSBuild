@@ -43,9 +43,7 @@ function uuid_from_profile
 }
 
 function install_profiles
-{
-    # remove old profiles and download distribution profiles
-    
+{    
     if [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
         
         (cd $BUILDROOT && bundle exec ios profiles:download:all \
@@ -54,7 +52,10 @@ function install_profiles
         -p "$APPLE_PW" \
         &> /dev/null) || failed "Failed downloading profiles"
         
-        # copy provisioning profiles to user library
+        # xcodebuild looks in the running user's library folder for
+        # the provisioning profile UUID you specify at build time.
+        # Downloaded profiles must be copied to that location otherwise
+        # xcodebuild will fail.
         
         PROFILES=$BUILDROOT/*.mobileprovision*
         
@@ -70,7 +71,7 @@ function install_profiles
             fi
         done
     else
-        echo "Missing Apple username and password, not downloading profiles"
+        echo "No Apple username or password, skipping profile download"
     fi
 }
 
@@ -80,7 +81,7 @@ function install_profiles
 # 1. Path to output directory (for CONFIGURATION_BUILD_DIR)
 # 2. Defines (for GCC_PREPROCESSOR_DEFINITIONS)
 # 3. Scheme (e.g. 'Release' or 'Adhoc')
-# 4. Path to mobile provisioning profile 
+# 4. Name of mobile provisioning profile 
 ##########
 function xc_package
 {
@@ -112,6 +113,7 @@ function xc_package
     [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
     
     echo "Building!"
+    
     cd $BUILDROOT && bundle exec xcodebuild \
     -workspace "$APPWORKSPACE" \
     -scheme "$3" \
@@ -162,7 +164,7 @@ echo "Installing bundle..."
 echo "Cleaning output..."
 clean &> /dev/null || failed "Failed clean"
 
-# install distribution profiles
+# install profiles
 
 if [ -n "$APPLE_UN" ]; then
     echo "Installing distribution provisioning profiles for $APPLE_UN..."
