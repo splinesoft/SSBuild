@@ -1,2 +1,2 @@
 language: objective-c
-script: set -ux && bash -n SSBuild.sh
+script: bash -n SSBuild.sh

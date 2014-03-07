@@ -54,8 +54,9 @@ function install_profiles
         
         # xcodebuild looks in the running user's library folder for
         # the provisioning profile UUID you specify at build time.
-        # Downloaded profiles must be copied to that location otherwise
-        # xcodebuild will fail.
+        # Downloaded profiles must be copied to that location AND
+        # renamed to match the profile's UUID, otherwise
+        # xcodebuild will fail to codesign.
         
         PROFILES=$BUILDROOT/*.mobileprovision*
         
@@ -90,7 +91,7 @@ function xc_package
     # cocoapods
     
     echo "Installing Cocoapods..."
-    (cd $SRCROOT && (pod install --no-color || pod update --no-color)) || failed "Failed running 'pod install'"
+    (cd $SRCROOT && (pod install --no-color || pod update --no-color)) || failed "Failed installing cocoapods"
     
     # unlock keychain
     
