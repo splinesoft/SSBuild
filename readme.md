@@ -85,3 +85,74 @@ Ideally we want our push notification's message to include the final result stat
 ## Thanks!
 
 `SSBuild` is a [@jhersh](https://github.com/jhersh) production -- ([electronic mail](mailto:jon@her.sh) | [@jhersh](https://twitter.com/jhersh))
+
+## Appendix: Building MUDRammer
+
+Where were you at 3:48am PST on March 7, 2014?
+
+It was a calm night in San Francisco... but then this happened:
+
+```bash
+Building MUDRammer in /Users/***/.jenkins/workspace/MUDRammer/src.
+Installing bundle...
+Cleaning output...
+Installing distribution provisioning profiles for admin@splinesoft.net...
+Setting App marketing version 1.7.1...
+Setting build number 440...
+Building scheme "MUDRammer Release" => /Users/***/.jenkins/workspace/MUDRammer/output/release
+Installing Cocoapods...
+Analyzing dependencies
+Downloading dependencies
+    *** snip ***
+Generating Pods project
+Integrating client project
+Unlocking keychain...
+Building!
+	*** snip ***
+▸ Signing /Users/***/.jenkins/workspace/MUDRammer/output/release/MUDRammer.app
+Packaging IPA...
+Zipping .dSYM...
+Building scheme "MUDRammer Adhoc" => /Users/***/.jenkins/workspace/MUDRammer/output/adhoc
+Installing Cocoapods...
+Analyzing dependencies
+Downloading dependencies
+    *** snip ***
+Generating Pods project
+Integrating client project
+Unlocking keychain...
+Building!
+    *** snip ***
+▸ Signing /Users/***/.jenkins/workspace/MUDRammer/output/adhoc/MUDRammer.app
+Packaging IPA...
+Zipping .dSYM...
+Removing profiles...
+INFO: Compiling list of local files...
+INFO: Compiling list of local files...
+INFO: Retrieving list of remote files for s3://***/MUDRammer/440/ ...
+INFO: Found 4 local files, 0 remote files
+INFO: Applying --exclude/--include
+INFO: Applying --exclude/--include
+INFO: Verifying attributes...
+INFO: Summary: 4 local files to upload, 0 files to remote copy, 0 remote files to delete
+    *** snip ***
+Done. Uploaded 33431322 bytes in 133.8 seconds, 244.01 kB/s.  Copied 0 files saving 0 bytes transfer.
+[OS X] restore keychains as defined in global configuration
+[MUDRammer] $ /usr/bin/security list-keychains -s /Users/***/Library/Keychains/login.keychain
+[MUDRammer] $ /usr/bin/security default-keychain -d user -s /Users/***/Library/Keychains/login.keychain
+Uploading to testflight
+File: /Users/***/.jenkins/workspace/MUDRammer/output/adhoc/MUDRammer.ipa
+DSYM: /Users/***/.jenkins/workspace/MUDRammer/output/adhoc/MUDRammer.dSYM.zip
+Testflight Upload speed: 1.68Mbps
+Testflight Install Link: ***
+Testflight Configuration Link: ***
+Performing Post build task...
+
++ pushover 'MUDRammer #440 succeeded.' http://***/job/MUDRammer/440/
+
+{"status":1,"request":"***"}
+POST BUILD TASK : SUCCESS
+END OF POST BUILD TASK : 0
+[PostBuildScript] - Execution post build scripts.
+[PostBuildScript] Build is not failure : do not execute script
+Finished: SUCCESS
+```
