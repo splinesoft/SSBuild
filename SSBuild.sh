@@ -91,7 +91,7 @@ function xc_package
     # cocoapods
     
     echo "Installing Cocoapods..."
-    (cd $SRCROOT && (pod install --no-color || pod update --no-color)) || failed "Failed installing cocoapods"
+    (cd "$SRCROOT" && (pod install --no-color || pod update --no-color)) || failed "Failed installing cocoapods"
     
     # unlock keychain
     
@@ -129,8 +129,8 @@ function xc_package
     
     echo "Packaging IPA..."
     /usr/bin/xcrun -sdk iphoneos \
-    PackageApplication $APP_APP \
-    -o $APP_IPA \
+    PackageApplication "$APP_APP" \
+    -o "$APP_IPA" \
     --embed "$PROFILE" || failed "Failed packaging"
     
     # ZIP dSYM
@@ -176,14 +176,14 @@ fi
 
 if [ -n "$MARKETINGVERSION" ]; then
     echo "Setting App marketing version $MARKETINGVERSION..."
-    (cd $SRCROOT && /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null) || failed "Failed setting marketing version"
+    (cd "$SRCROOT" && /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null) || failed "Failed setting marketing version"
 else
     echo "Skipping setting marketing version. Specify \$MARKETINGVERSION in your App.config."
 fi
 
 if [ -n "$BUILD_NUMBER" ]; then
     echo "Setting build number $BUILD_NUMBER..."
-    (cd $SRCROOT && /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null) || failed "Failed setting build number"
+    (cd "$SRCROOT" && /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null) || failed "Failed setting build number"
 else
     echo "Skipping setting build number. Specify \$BUILD_NUMBER."
 fi
@@ -209,7 +209,7 @@ fi
 if [ -n "$ADHOC_OUTPUT" ]; then
     
     # add testflight sdk to podfile
-    echo "pod 'ARAnalytics/TestFlight'" >> $SRCROOT/Podfile
+    echo "pod 'ARAnalytics/TestFlight'" >> "$SRCROOT/Podfile"
     
     xc_package \
     "$ADHOC_OUTPUT" \
