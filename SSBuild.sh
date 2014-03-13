@@ -115,7 +115,7 @@ function xc_package
     
     echo "Building!"
     
-    cd $BUILDROOT && bundle exec xcodebuild \
+    cd "$BUILDROOT" && bundle exec xcodebuild \
     -workspace "$APPWORKSPACE" \
     -scheme "$3" \
     clean build \
@@ -263,6 +263,9 @@ done
 ############
 
 if [ -n "$S3_BUCKET" ]; then
+    
+    echo "Uploading to S3 bucket \"$S3_BUCKET\"..."
+    
     s3cmd sync -rv --no-guess-mime-type \
     --exclude '*.*' \
     --include '*.ipa' --include '*.dSYM.zip' \

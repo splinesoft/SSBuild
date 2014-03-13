@@ -34,9 +34,9 @@ CI means clicking one button and out pops your IPA, ready to be submitted to App
 
 * [Cupertino](https://github.com/nomad/cupertino) downloads your provisioning profiles from Apple's developer center: `[sudo] gem install cupertino`
 * [Cocoapods](http://cocoapods.org) is the Objective-C package manager. You're using pods, right? `[sudo] gem install cocoapods`
-* [xcpretty](https://github.com/mneorr/XCPretty) formats Apple's `xcodebuild` output, which is exceptionally verbose, into something much more human-readable. `[sudo] gem install xcpretty`
+* [xcpretty](https://github.com/supermarin/xcpretty) formats Apple's `xcodebuild` output, which is exceptionally verbose, into something much more human-readable. `[sudo] gem install xcpretty`
 * An active iOS developer account and an app to build
-* Optional: [s3cmd](http://s3tools.org/s3cmd) for uploading build artifacts to Amazon S3.
+* Optional: [s3cmd](http://s3tools.org/s3cmd) uploads build artifacts to Amazon S3.
 
 SSBuild will attempt to install `cupertino`, `cocoapods`, and `xcpretty` with the included `Gemfile`.
 
