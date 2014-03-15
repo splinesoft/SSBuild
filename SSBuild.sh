@@ -44,36 +44,31 @@ function uuid_from_profile
 
 function install_profiles
 {    
-    if [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
+    (cd "$BUILDROOT" && bundle exec ios profiles:download:all \
+    --type distribution \
+    -u "$APPLE_UN" \
+    -p "$APPLE_PW" \
+    &> /dev/null) || failed "Failed downloading profiles"
+    
+    # xcodebuild looks in the running user's library folder for
+    # the provisioning profile UUID you specify at build time.
+    # Downloaded profiles must be copied to that location
+    # AND renamed to match the profile's UUID,
+    # otherwise xcodebuild will fail to codesign.
+    
+    PROFILES=$BUILDROOT/*.mobileprovision*
+    
+    for file in $PROFILES 
+    do
+        PROFILE_UUID=`uuid_from_profile $file`
         
-        (cd $BUILDROOT && bundle exec ios profiles:download:all \
-        --type distribution \
-        -u "$APPLE_UN" \
-        -p "$APPLE_PW" \
-        &> /dev/null) || failed "Failed downloading profiles"
-        
-        # xcodebuild looks in the running user's library folder for
-        # the provisioning profile UUID you specify at build time.
-        # Downloaded profiles must be copied to that location AND
-        # renamed to match the profile's UUID, otherwise
-        # xcodebuild will fail to codesign.
-        
-        PROFILES=$BUILDROOT/*.mobileprovision*
-        
-        for file in $PROFILES 
-        do
-            PROFILE_UUID=`uuid_from_profile $file`
-            
-            if [ -n "$PROFILE_UUID" ]; then             
-                echo "Installing profile $PROFILE_UUID"
-                cp "$file" "$HOME/Library/MobileDevice/Provisioning Profiles/${PROFILE_UUID}.mobileprovision" || failed "Failed installing $file"
-            else
-                echo "No UUID found in $file"
-            fi
-        done
-    else
-        echo "No Apple username or password, skipping profile download"
-    fi
+        if [ -n "$PROFILE_UUID" ]; then             
+            echo "Installing profile $PROFILE_UUID"
+            cp "$file" "$HOME/Library/MobileDevice/Provisioning Profiles/${PROFILE_UUID}.mobileprovision" || failed "Failed installing $file"
+        else
+            echo "No UUID found in $file"
+        fi
+    done
 }
 
 ##########
@@ -167,9 +162,11 @@ clean &> /dev/null || failed "Failed clean"
 
 # install profiles
 
-if [ -n "$APPLE_UN" ]; then
+if [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
     echo "Installing distribution provisioning profiles for $APPLE_UN..."
     install_profiles || failed "Failed installing profiles"
+else
+    echo "Skipping provisioning profile download; no apple username or password"
 fi
 
 # set marketing and build version
@@ -221,7 +218,7 @@ if [ -n "$ADHOC_OUTPUT" ]; then
     # because the Jenkins-Testflight plugin can include
     # your recent commit history in the build notes.
     #
-    # You could also upload to Testflight with Shenzen:
+    # You could also upload to Testflight with Shenzhen:
     # https://github.com/nomad/shenzhen
     #
     #ipa distribute:testflight \
