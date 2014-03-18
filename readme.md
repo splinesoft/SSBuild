@@ -14,11 +14,8 @@ SSBuild performs these steps:
 6. Zips your app's .dSYM.
 7. (Optional) Repeats steps 3-6 for an Adhoc (Testflight/Hockeyapp) build
 8. (Optional) Archives important build artifacts -- your IPA and .dSYM -- and uploads them to Amazon S3
-
-The fun doesn't stop there. Read on to see how to configure Jenkins for even more goodness:
-
-* Distribute your Adhoc build IPA and .dSYM to a beta service like Testflight or Hockeyapp
-* Send a push notification to your iOS devices with the ultimate outcome of all previous steps - success or failure.
+9. (Optional) Distribute your Adhoc build IPA and .dSYM to a beta service like Testflight or Hockeyapp
+10. (Optional) Send a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
 
 SSBuild powers continuous integration, packaging, archiving, Adhoc distributions, and notifications for my app [MUDRammer - A Modern MUD Client for iPhone and iPad](https://itunes.apple.com/us/app/mudrammer-a-modern-mud-client/id597157072?mt=8).
 
@@ -61,26 +58,6 @@ The `SSBuild.sh` script takes just one argument: the path to your `MyApp.config`
 ### Test Distributions
 
 I use the [Jenkins Testflight](https://wiki.jenkins-ci.org/display/JENKINS/Testflight+Plugin) plugin to automatically upload my Adhoc IPA and .dSYM file to Testflight after every build. I prefer this plugin over a manual upload script because the plugin can include your commit history in the testflight build notes.
-
-### Build Status Push Notifications
-
-My Jenkins server sends me a push notification with the result of every build. This is powered by [Pushover](https://pushover.net/), a fantastic iOS app and web service for sending push notifications to your devices.
-
-The pushover script itself is super simple:
-
-```bash
-curl -s \
-	-F "token=PushoverToken" \
-	-F "user=Pushover-User-Or-Group" \
-	-F "message=$JOB_NAME $BUILD_DISPLAY_NAME succeeded." \
-	-F "url=$BUILD_URL" \
-	https://api.pushover.net/1/messages.json
-```
-
-Ideally we want our push notification's message to include the final result status of our build. I've wired this up through the use of two separate post-build scripts; one each for build success and failure.
-
-* [Hudson Post-build Task](http://wiki.hudson-ci.org/display/HUDSON/Post+build+task)
-* [Jenkins Post-Build script](http://wiki.jenkins-ci.org/display/JENKINS/PostBuildScript+Plugin)
 
 ## Thanks!
 

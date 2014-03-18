@@ -4,28 +4,36 @@
 # SSBuild - a script to build your iOS app.
 # https://github.com/splinesoft/SSBuild
 #
-# SSBuild performs these steps:
-#
-# 1. Downloads and installs your distribution provisioning profiles from Apple's Developer Center
-# 2. Updates your app's major (marketing) and minor (build) version numbers
-# 3. Installs your Cocoapods
-# 4. Unlocks the OS X keychain to prepare for code signing
-# 5. Builds, codesigns, and archives your app into an IPA
-# 6. Zips your app's .dSYM.
-# (Optional) Repeats steps 3-6 for an Adhoc (Testflight/Hockeyapp) build
-# (Optional) Archives important build artifacts -- your IPA and .dSYM -- and uploads them to Amazon S3
-#
 # The SSBuild.sh script takes just one argument: 
 # the path to your MyApp.config file. 
 # Here's how you might run it:
 #
 # ./SSBuild.sh "/path/to/MyApp.config"
+#
+
+# Send a push notification, e.g. via Pushover
+# 1st arg: message to send
+# 2nd arg: URL
+function notify
+{
+    if [ -n "$PUSHOVER_TOKEN" ] && [ -n "$PUSHOVER_RECIPIENT" ]; then
+        curl -s \
+        -F "token=$PUSHOVER_TOKEN" \
+        -F "user=$PUSHOVER_RECIPIENT" \
+        -F "message=$1" \
+        -F "url=$2" \
+        https://api.pushover.net/1/messages.json &> /dev/null || echo 'Failed sending push notification'
+    else
+        echo "Missing token or recipient - not sending push notification"
+    fi
+}
 
 function failed
 {
     echo ""
     echo "=> $1" 1>&2
     echo ""
+    notify "$JOB_NAME $BUILD_DISPLAY_NAME failed: $1" "$BUILD_URL"
     exit 1
 }
 
@@ -269,3 +277,9 @@ if [ -n "$S3_BUCKET" ]; then
     $OUTPUT/* \
     s3://$S3_BUCKET/$JOB_NAME/$BUILD_NUMBER/
 fi
+
+########
+# NOTIFY
+########
+
+notify "${JOB_NAME} ${BUILD_DISPLAY_NAME} succeeded." "${BUILD_URL}"
