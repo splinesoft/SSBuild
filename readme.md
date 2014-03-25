@@ -14,8 +14,8 @@ SSBuild performs these steps:
 6. Zips your app's .dSYM.
 7. (Optional) Repeats steps 3-6 for an Adhoc (Testflight/Hockeyapp) build
 8. (Optional) Archives important build artifacts -- your IPA and .dSYM -- and uploads them to Amazon S3
-9. (Optional) Distribute your Adhoc build IPA and .dSYM to a beta service like Testflight or Hockeyapp
-10. (Optional) Send a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
+9. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Testflight or Hockeyapp
+10. (Optional) Sends a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
 
 SSBuild powers continuous integration, packaging, archiving, Adhoc distributions, and notifications for my app [MUDRammer - A Modern MUD Client for iPhone and iPad](https://itunes.apple.com/us/app/mudrammer-a-modern-mud-client/id597157072?mt=8).
 
@@ -122,14 +122,5 @@ DSYM: /Users/***/.jenkins/workspace/MUDRammer/output/adhoc/MUDRammer.dSYM.zip
 Testflight Upload speed: 1.68Mbps
 Testflight Install Link: ***
 Testflight Configuration Link: ***
-Performing Post build task...
-
-+ pushover 'MUDRammer #440 succeeded.' http://***/job/MUDRammer/440/
-
-{"status":1,"request":"***"}
-POST BUILD TASK : SUCCESS
-END OF POST BUILD TASK : 0
-[PostBuildScript] - Execution post build scripts.
-[PostBuildScript] Build is not failure : do not execute script
 Finished: SUCCESS
 ```
