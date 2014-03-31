@@ -94,7 +94,7 @@ function xc_package
     # cocoapods
     
     echo "Installing Cocoapods..."
-    (cd "$SRCROOT" && (pod install --no-color || pod update --no-color)) || failed "Failed installing cocoapods"
+    (cd "$SRCROOT" && (pod install --no-ansi || pod update --no-ansi)) || failed "Failed installing cocoapods"
     
     # unlock keychain
     
