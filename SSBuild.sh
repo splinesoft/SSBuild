@@ -94,7 +94,7 @@ function xc_package
     # cocoapods
     
     echo "Installing Cocoapods..."
-    (cd "$SRCROOT" && (pod install --no-ansi || pod update --no-ansi)) || failed "Failed installing cocoapods"
+    (cd "$SRCROOT" && (pod install || pod update)) || failed "Failed installing cocoapods"
     
     # unlock keychain
     
@@ -126,7 +126,7 @@ function xc_package
     PROVISIONING_PROFILE="$UUID" \
     CODE_SIGN_IDENTITY="$CODESIGN_ID" \
     OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
-    GCC_PREPROCESSOR_DEFINITIONS="$2" | xcpretty -s || failed "Failed building"
+    GCC_PREPROCESSOR_DEFINITIONS="$2" | xcpretty -c || failed "Failed building"
     
     # IPA
     
