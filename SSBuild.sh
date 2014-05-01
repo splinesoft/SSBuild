@@ -168,11 +168,11 @@ echo "Installing bundle..."
 echo "Cleaning output..."
 clean &> /dev/null || failed "Failed clean"
 
-# install profiles
+# install profiles (two attempts - Apple's Dev site can be wonky)
 
 if [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
     echo "Installing distribution provisioning profiles for $APPLE_UN..."
-    install_profiles || failed "Failed installing profiles"
+    install_profiles || install_profiles || failed "Failed installing profiles"
 else
     echo "Skipping provisioning profile download; no apple username or password"
 fi
