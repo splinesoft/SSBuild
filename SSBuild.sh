@@ -143,6 +143,7 @@ function xc_package
 }
 
 set -e
+set -o pipefail
 
 [ -n "$1" ] || failed "No config file specified!"
 [ -e "$1" ] || failed "Config file \"$1\" does not exist or is unreadable."
