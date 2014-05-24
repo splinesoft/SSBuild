@@ -47,7 +47,7 @@ function clean
 
 function uuid_from_profile
 {
-    echo `grep -aA1 UUID "$1" | grep -o "[-A-Z0-9]\{36\}"`
+    grep -aA1 UUID "$1" | grep -o "[-A-Z0-9]\{36\}"
 }
 
 function install_profiles
@@ -99,9 +99,9 @@ function xc_package
     # unlock keychain
     
     echo "Unlocking keychain..."
-    /usr/bin/security list-keychains -s "$BUILD_KEYCHAIN"
-    /usr/bin/security default-keychain -d user -s "$BUILD_KEYCHAIN"
-    /usr/bin/security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" &> /dev/null || failed "Failed unlocking keychain"
+    security list-keychains -s "$BUILD_KEYCHAIN"
+    security default-keychain -d user -s "$BUILD_KEYCHAIN"
+    security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" &> /dev/null || failed "Failed unlocking keychain"
     
     # Calculated paths
     
@@ -131,7 +131,7 @@ function xc_package
     # IPA
     
     echo "Packaging IPA..."
-    /usr/bin/xcrun -sdk iphoneos \
+    xcrun -sdk iphoneos \
     PackageApplication "$APP_APP" \
     -o "$APP_IPA" \
     --embed "$PROFILE" || failed "Failed packaging"
