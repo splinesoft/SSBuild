@@ -126,7 +126,7 @@ function xc_package
     PROVISIONING_PROFILE="$UUID" \
     CODE_SIGN_IDENTITY="$CODESIGN_ID" \
     OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
-    GCC_PREPROCESSOR_DEFINITIONS="$2" | xcpretty -c || failed "Failed building"
+    GCC_PREPROCESSOR_DEFINITIONS="\$(inherited) $2" | xcpretty -c || failed "Failed building"
     
     # IPA
     
@@ -214,8 +214,12 @@ fi
 
 if [ -n "$ADHOC_OUTPUT" ]; then
     
-    # add testflight sdk to podfile
+    # inject testflight and bugshot sdks to podfile.
+    # pods per configuration is yet to arrive in cocoapods
+    # another option would be to maintain a separate "Adhoc" target
     echo "pod 'ARAnalytics/TestFlight'" >> "$SRCROOT/Podfile"
+    echo "pod 'BugshotKit'" >> "$SRCROOT/Podfile"
+    
     
     xc_package \
     "$ADHOC_OUTPUT" \
