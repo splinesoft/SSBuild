@@ -13,7 +13,7 @@ SSBuild performs these steps:
 5. Builds, codesigns, and archives your app into an IPA
 6. Zips your app's .dSYM.
 7. (Optional) Repeats steps 3-6 for an Adhoc (Testflight/Hockeyapp) build
-8. (Optional) Archives important build artifacts -- your IPA and .dSYM -- and uploads them to Amazon S3
+8. (Optional) Uploads important build artifacts -- your IPA(s) and .dSYM(s) -- to Amazon S3
 9. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Testflight or Hockeyapp
 10. (Optional) Sends a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
 
@@ -29,10 +29,10 @@ CI means clicking one button and out pops your IPA, ready to be submitted to App
 
 ## Requirements
 
-* [Cupertino](https://github.com/nomad/cupertino) downloads your provisioning profiles from Apple's developer center: `[sudo] gem install cupertino`
-* [Cocoapods](http://cocoapods.org) is the Objective-C package manager. You're using pods, right? `[sudo] gem install cocoapods`
-* [xcpretty](https://github.com/supermarin/xcpretty) formats Apple's `xcodebuild` output, which is exceptionally verbose, into something much more human-readable. `[sudo] gem install xcpretty`
 * An active iOS developer account and an app to build
+* [Cupertino](https://github.com/nomad/cupertino) downloads your provisioning profiles from Apple's developer center.
+* [Cocoapods](http://cocoapods.org) is the Objective-C package manager. You're using pods, right?
+* [xcpretty](https://github.com/supermarin/xcpretty) formats Apple's `xcodebuild` output, which is exceptionally verbose, into something much more human-readable.
 * Optional: [s3cmd](http://s3tools.org/s3cmd) uploads build artifacts to Amazon S3.
 
 SSBuild will attempt to install `cupertino`, `cocoapods`, and `xcpretty` with the included `Gemfile`.
@@ -43,7 +43,7 @@ You'll need 3 things to get started:
 
 1. The `SSBuild.sh` script from this repo
 2. A config file for your app. Check out the sample `MyApp.config` and modify it to suit your needs. Keep in mind that your `MyApp.config` file **CONTAINS SECRETS** and **SHOULD NOT BE CHECKED INTO VERSION CONTROL**.
-3. Location of and password to a keychain containing your codesigning certificate and private key. Chances are you already have these items in your user's main login keychain. Consider creating a new keychain file (Keychain Access -> File -> New Keychain...) that contains just your iOS codesigning identity and private key. Make sure to password-protect your new keychain and consider checking it into version control.
+3. Location of and password to a keychain containing your codesigning certificate and private key. Chances are you already have these in your user's main login keychain. Try creating a new keychain file (Keychain Access -> File -> New Keychain...) that contains only your iOS codesigning identity and private key. Make sure to password-protect your new keychain and consider checking it into version control.
 
 The `SSBuild.sh` script takes just one argument: the path to your `MyApp.config` file. Here's how you might run it:
 
