@@ -287,4 +287,4 @@ fi
 ########
 
 # various parameters here supplied by jenkins at build time
-notify "${JOB_NAME} ${BUILD_DISPLAY_NAME} (${GIT_BRANCH}@{$GIT_COMMIT:0:7}) succeeded." "${BUILD_URL}"
+notify "${JOB_NAME} ${BUILD_DISPLAY_NAME} (${GIT_BRANCH}@${GIT_COMMIT:0:7}) succeeded." "${BUILD_URL}"
