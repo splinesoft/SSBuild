@@ -300,7 +300,7 @@ if [ -n "$S3_BUCKET" ]; then
     
     s3cmd sync -rv --no-guess-mime-type \
     --exclude '*.*' \
-    --include '*.ipa' --include '*.dSYM.zip' \
+    --include '*.ipa' --include '*.dSYM.zip' --include "$CHANGELOG_FILE" \
     $OUTPUT/* \
     s3://$S3_BUCKET/$JOB_NAME/$BUILD_NUMBER/
 fi
