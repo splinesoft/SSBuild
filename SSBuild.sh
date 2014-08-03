@@ -194,6 +194,29 @@ else
     echo "Skipping setting build number. Specify \$BUILD_NUMBER."
 fi
 
+##
+# Generate a changelog file containing the git commit history
+# since the last successful build. 
+# Requires Jenkins, which populates JOB_URL for us
+##
+if [ -n "$JOB_URL" ] && [ -n "$CHANGELOG_FILE" ] && [ -n "$JENKINS_USER" ] && [ -n "$JENKINS_TOKEN" ]; then
+    
+    LAST_SUCCESS_URL_SUFFIX="lastSuccessfulBuild/api/xml"
+    BUILD_XML_URL="${JOB_URL}${LAST_SUCCESS_URL_SUFFIX}"
+    
+    # fetch the last successfully-built revision
+    LAST_SUCCESS_REV=$(curl -s --user $JENKINS_USER:$JENKINS_TOKEN "$BUILD_XML_URL" | grep "<lastBuiltRevision>" | sed 's|.*<lastBuiltRevision>.*<SHA1>\(.*\)</SHA1>.*<branch>.*|\1|')
+    
+    # All commit comments since the last successfully built revision
+    GIT_LOG_FORMAT="%ae: \"%s\" %N%n"
+    LOG=$(cd "$SRCROOT" && git log --pretty="$GIT_LOG_FORMAT" "$LAST_SUCCESS_REV..HEAD")
+    
+    echo "$LOG" > "${OUTPUT}/${CHANGELOG_FILE}"
+    echo "Wrote changelog to ${OUTPUT}/${CHANGELOG_FILE}"
+else
+    echo "Skipping generating changelog"
+fi
+
 ###############
 # BUILD RELEASE
 ###############

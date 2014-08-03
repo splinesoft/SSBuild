@@ -8,14 +8,15 @@ SSBuild performs these steps:
 
 1. Downloads and installs your distribution provisioning profiles from Apple's Developer Center
 2. Updates your app's major (marketing) and minor (build) version numbers
-3. Installs your [Cocoapods](http://cocoapods.org)
-4. Unlocks the OS X keychain to prepare for code signing
-5. Builds, codesigns, and archives your app into an IPA
-6. Zips your app's .dSYM.
-7. (Optional) Repeats steps 3-6 for an Adhoc (Testflight/Hockeyapp) build
-8. (Optional) Uploads important build artifacts -- your IPA(s) and .dSYM(s) -- to Amazon S3
-9. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Testflight or Hockeyapp
-10. (Optional) Sends a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
+3. Writes a changelog containing the commits since the last successful build (requires Jenkins)
+4. Installs your [Cocoapods](http://cocoapods.org)
+5. Unlocks the OS X keychain to prepare for code signing
+6. Builds, codesigns, and archives your app into an IPA
+7. Zips your app's .dSYM.
+8. (Optional) Repeats steps 4-7 for an Adhoc (Testflight/Hockey/Crashlytics) build
+9. (Optional) Uploads important build artifacts -- your IPA(s) and .dSYM(s) -- to Amazon S3
+10. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Testflight, Hockey, or Crashlytics
+11. (Optional) Sends a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
 
 SSBuild powers continuous integration, packaging, archiving, Adhoc distributions, and notifications for my app [MUDRammer - A Modern MUD Client for iPhone and iPad](https://itunes.apple.com/us/app/mudrammer-a-modern-mud-client/id597157072?mt=8).
 
