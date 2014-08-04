@@ -8,7 +8,7 @@ SSBuild performs these steps:
 
 1. Downloads and installs your distribution provisioning profiles from Apple's Developer Center
 2. Updates your app's major (marketing) and minor (build) version numbers
-3. Writes a changelog containing the commits since the last successful build (requires Jenkins)
+3. Writes a changelog with the commit history since the last successful build (requires Jenkins)
 4. Installs your [Cocoapods](http://cocoapods.org)
 5. Unlocks the OS X keychain to prepare for code signing
 6. Builds, codesigns, and archives your app into an IPA

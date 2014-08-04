@@ -249,19 +249,16 @@ if [ -n "$ADHOC_OUTPUT" ]; then
     "$ADHOC_SCHEME" \
     "$ADHOC_PROFILE"
     
-    # I prefer to upload builds to Testflight with Jenkins
-    # because the Jenkins-Testflight plugin can include
-    # your recent commit history in the build notes.
-    #
+
     # You could also upload to Testflight with Shenzhen:
     # https://github.com/nomad/shenzhen
     #
     #ipa distribute:testflight \
-    #-f IPA file \
-    #-d dSYM.zip file \
+    #-f ${ADHOC_OUTPUT}/${APP_NAME}.ipa \
+    #-d ${ADHOC_OUTPUT}/${APP_NAME}.dSYM.zip file \
     #-a Your api key \
     #-T Your team token \
-    #-m Build notes
+    #-m $(cat ${CHANGELOG_FILE})
 else
     echo "Skipping Adhoc build"
 fi
