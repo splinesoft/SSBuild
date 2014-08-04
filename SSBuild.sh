@@ -250,12 +250,11 @@ if [ -n "$ADHOC_OUTPUT" ]; then
     "$ADHOC_PROFILE"
     
 
-    # You could also upload to Testflight with Shenzhen:
-    # https://github.com/nomad/shenzhen
+    # You could upload to Testflight with Shenzhen: https://github.com/nomad/shenzhen
     #
     #ipa distribute:testflight \
     #-f ${ADHOC_OUTPUT}/${APP_NAME}.ipa \
-    #-d ${ADHOC_OUTPUT}/${APP_NAME}.dSYM.zip file \
+    #-d ${ADHOC_OUTPUT}/${APP_NAME}.dSYM.zip \
     #-a Your api key \
     #-T Your team token \
     #-m $(cat ${CHANGELOG_FILE})
