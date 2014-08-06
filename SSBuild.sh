@@ -208,8 +208,7 @@ if [ -n "$JOB_URL" ] && [ -n "$CHANGELOG_FILE" ] && [ -n "$JENKINS_USER" ] && [ 
     LAST_SUCCESS_REV=$(curl -s --user $JENKINS_USER:$JENKINS_TOKEN "$BUILD_XML_URL" | grep "<lastBuiltRevision>" | sed 's|.*<lastBuiltRevision>.*<SHA1>\(.*\)</SHA1>.*<branch>.*|\1|')
     
     # All commit comments since the last successfully built revision
-    GIT_LOG_FORMAT="%an: \"%s\" %N%n"
-    LOG=$(cd "$SRCROOT" && git log --pretty="$GIT_LOG_FORMAT" "$LAST_SUCCESS_REV..HEAD")
+    LOG=$(cd "$SRCROOT" && git log --pretty="$CHANGELOG_FORMAT" "$LAST_SUCCESS_REV..HEAD")
     
     echo "$LOG" > "${OUTPUT}/${CHANGELOG_FILE}"
     echo "Wrote changelog to ${OUTPUT}/${CHANGELOG_FILE}"
