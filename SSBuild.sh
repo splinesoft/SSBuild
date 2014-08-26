@@ -47,7 +47,7 @@ function clean
 
 function uuid_from_profile
 {
-    grep -aA1 UUID "$1" | grep -o "[-A-Z0-9]\{36\}"
+    grep -aA1 UUID "$1" | grep -o "[-a-zA-Z0-9]\{36\}"
 }
 
 function install_profiles
