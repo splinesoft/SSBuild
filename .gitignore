@@ -1,7 +1,9 @@
 # SSBuild
 
 .DS_Store
-Gemfile.lock
 
 *.mobileprovision
-MUDRammer.*
+
+*.config
+!MyApp.config
+
