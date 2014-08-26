@@ -3,7 +3,7 @@
 .DS_Store
 
 *.mobileprovision
-
+*.keychain
 *.config
 !MyApp.config
 
