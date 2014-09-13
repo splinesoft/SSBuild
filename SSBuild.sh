@@ -91,11 +91,6 @@ function xc_package
 {
     echo "Building scheme \"$3\" => $1"
     
-    # cocoapods
-    
-    echo "Installing Cocoapods..."
-    (cd "$SRCROOT" && (pod install || pod update)) || failed "Failed installing cocoapods"
-    
     # unlock keychain
     
     echo "Unlocking keychain..."
@@ -216,6 +211,11 @@ else
     echo "Skipping generating changelog"
 fi
 
+# cocoapods
+
+echo "Installing Cocoapods..."
+bundle exec pod install --project-directory="$SRCROOT" || failed "Failed installing cocoapods"
+
 ###############
 # BUILD RELEASE
 ###############
@@ -235,12 +235,6 @@ fi
 ###########################
 
 if [ -n "$ADHOC_OUTPUT" ]; then
-    
-    # Perform special adhoc build setup, in this case to
-    # inject testflight and bugshot sdks at the end of the podfile.
-    # pods per configuration is yet to arrive in cocoapods.
-    # another option would be to maintain a separate "Adhoc" target
-    adhoc_setup    
     
     xc_package \
     "$ADHOC_OUTPUT" \

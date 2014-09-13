@@ -13,7 +13,7 @@ SSBuild performs these steps:
 5. Unlocks the OS X keychain to prepare for code signing
 6. Builds, codesigns, and archives your app into an IPA
 7. Zips your app's .dSYM.
-8. (Optional) Repeats steps 4-7 for an Adhoc (Testflight/Hockey/Crashlytics) build
+8. (Optional) Repeats steps 5-7 for an Adhoc (Testflight/Hockey/Crashlytics) build
 9. (Optional) Uploads important build artifacts -- your IPA(s) and .dSYM(s) -- to Amazon S3
 10. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Testflight, Hockey, or Crashlytics
 11. (Optional) Sends a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
