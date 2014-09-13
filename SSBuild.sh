@@ -213,8 +213,8 @@ fi
 
 # cocoapods
 
-echo "Installing Cocoapods..."
-bundle exec pod install --project-directory="$SRCROOT" || failed "Failed installing cocoapods"
+echo "Installing CocoaPods..."
+bundle exec pod install --project-directory="$SRCROOT" || failed "Failed installing CocoaPods"
 
 ###############
 # BUILD RELEASE
