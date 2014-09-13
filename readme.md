@@ -9,7 +9,7 @@ SSBuild performs these steps:
 1. Downloads and installs your distribution provisioning profiles from Apple's Developer Center
 2. Updates your app's major (marketing) and minor (build) version numbers
 3. Writes a changelog with the commit history since the last successful build (requires Jenkins)
-4. Installs your [Cocoapods](http://cocoapods.org)
+4. Installs your [CocoaPods](http://cocoapods.org)
 5. Unlocks the OS X keychain to prepare for code signing
 6. Builds, codesigns, and archives your app into an IPA
 7. Zips your app's .dSYM.
@@ -32,7 +32,7 @@ CI means clicking one button and out pops your IPA, ready to be submitted to App
 
 * An active iOS developer account and an app to build
 * [Cupertino](https://github.com/nomad/cupertino) downloads your provisioning profiles from Apple's developer center.
-* [Cocoapods](http://cocoapods.org) is the Objective-C package manager. You're using pods, right?
+* [CocoaPods](http://cocoapods.org) is the Objective-C package manager. You're using pods, right?
 * [xcpretty](https://github.com/supermarin/xcpretty) formats Apple's `xcodebuild` output, which is exceptionally verbose, into something much more human-readable.
 * Optional: [s3cmd](http://s3tools.org/s3cmd) uploads build artifacts to Amazon S3.
 
@@ -78,7 +78,7 @@ Installing distribution provisioning profiles for admin@splinesoft.net...
 Setting App marketing version 1.7.1...
 Setting build number 440...
 Building scheme "MUDRammer Release" => /Users/***/.jenkins/workspace/MUDRammer/output/release
-Installing Cocoapods...
+Installing CocoaPods...
 Analyzing dependencies
 Downloading dependencies
     *** snip ***
@@ -91,7 +91,7 @@ Building!
 Packaging IPA...
 Zipping .dSYM...
 Building scheme "MUDRammer Adhoc" => /Users/***/.jenkins/workspace/MUDRammer/output/adhoc
-Installing Cocoapods...
+Installing CocoaPods...
 Analyzing dependencies
 Downloading dependencies
     *** snip ***
