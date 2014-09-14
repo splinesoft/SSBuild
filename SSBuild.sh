@@ -230,27 +230,16 @@ else
     failed "Did you specify a release output location?"
 fi
 
-###########################
-# BUILD ADHOC // TESTFLIGHT
-###########################
+#############
+# BUILD ADHOC
+#############
 
 if [ -n "$ADHOC_OUTPUT" ]; then
-    
     xc_package \
     "$ADHOC_OUTPUT" \
     "$ADHOC_DEFINES" \
     "$ADHOC_SCHEME" \
     "$ADHOC_PROFILE"
-    
-
-    # You could upload to Testflight with Shenzhen: https://github.com/nomad/shenzhen
-    #
-    #ipa distribute:testflight \
-    #-f ${ADHOC_OUTPUT}/${APP_NAME}.ipa \
-    #-d ${ADHOC_OUTPUT}/${APP_NAME}.dSYM.zip \
-    #-a Your api key \
-    #-T Your team token \
-    #-m $(cat ${CHANGELOG_FILE})
 else
     echo "Skipping Adhoc build"
 fi

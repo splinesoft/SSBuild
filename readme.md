@@ -15,7 +15,7 @@ SSBuild performs these steps:
 7. Zips your app's .dSYM.
 8. (Optional) Repeats steps 5-7 for an Adhoc (Testflight/Hockey/Crashlytics) build
 9. (Optional) Uploads important build artifacts -- your IPA(s) and .dSYM(s) -- to Amazon S3
-10. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Testflight, Hockey, or Crashlytics
+10. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Hockey or Crashlytics
 11. (Optional) Sends a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
 
 SSBuild powers continuous integration, packaging, archiving, Adhoc distributions, and notifications for my app [MUDRammer - A Modern MUD Client for iPhone and iPad](https://itunes.apple.com/us/app/mudrammer-a-modern-mud-client/id597157072?mt=8).
@@ -58,7 +58,17 @@ The `SSBuild.sh` script takes just one argument: the path to your `MyApp.config`
 
 ### Test Distributions
 
-I use the [Jenkins Testflight](https://wiki.jenkins-ci.org/display/JENKINS/Testflight+Plugin) plugin to automatically upload my Adhoc IPA and .dSYM file to Testflight after every build. I prefer this plugin over a manual upload script because the plugin can include your commit history in the testflight build notes.
+MUDRammer's adhoc test builds are powered by [Crashlytics Beta](http://try.crashlytics.com/beta/). Jenkins automatically uploads an adhoc IPA to Crashlytics after each build:
+
+```bash
+$WORKSPACE/src/Mudrammer/Supporting*/Crashlytics.framework/submit \
+AN_API_KEY \
+A_BUILD_SECRET_KEY \
+-ipaPath $WORKSPACE/output/adhoc/MUDRammer.ipa \
+-groupAliases core \
+-notesPath $WORKSPACE/output/changelog.txt \
+-debug
+```
 
 ## Thanks!
 
