@@ -112,6 +112,7 @@ function xc_package
     [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
     
     echo "Building!"
+    xcodebuild -version
     
     cd "$BUILDROOT" && bundle exec xcodebuild \
     -workspace "$APPWORKSPACE" \
