@@ -56,7 +56,7 @@ function install_profiles
     --type distribution \
     -u "$APPLE_UN" \
     -p "$APPLE_PW" \
-    &> /dev/null) || failed "Failed downloading profiles"
+    > /dev/null) || failed "Failed downloading profiles"
     
     # xcodebuild looks in the running user's library folder for
     # the provisioning profile UUID you specify at build time.
@@ -163,7 +163,7 @@ echo "Building $APPNAME in $SRCROOT."
 ###########
 
 echo "Installing bundle..."
-(cd $BUILDROOT && bundle install &> /dev/null) || failed "Failed installing bundle. Try running 'sudo bundle install'"
+(cd $BUILDROOT && bundle install > /dev/null) || failed "Failed installing bundle. Try running 'sudo bundle install'"
 
 # Remove output
 
@@ -174,7 +174,7 @@ clean &> /dev/null || failed "Failed clean"
 
 if [ -n "$APPLE_UN" ] && [ -n "$APPLE_PW" ]; then
     echo "Installing distribution provisioning profiles for $APPLE_UN..."
-    install_profiles || install_profiles || failed "Failed installing profiles"
+    install_profiles || failed "Failed installing profiles"
 else
     echo "Skipping provisioning profile download; no apple username or password"
 fi
@@ -183,14 +183,14 @@ fi
 
 if [ -n "$MARKETINGVERSION" ]; then
     echo "Setting App marketing version $MARKETINGVERSION..."
-    (cd "$SRCROOT" && /usr/bin/agvtool new-marketing-version $MARKETINGVERSION &> /dev/null) || failed "Failed setting marketing version"
+    (cd "$SRCROOT" && /usr/bin/agvtool new-marketing-version $MARKETINGVERSION > /dev/null) || failed "Failed setting marketing version"
 else
     echo "Skipping setting marketing version. Specify \$MARKETINGVERSION in your App.config."
 fi
 
 if [ -n "$BUILD_NUMBER" ]; then
     echo "Setting build number $BUILD_NUMBER..."
-    (cd "$SRCROOT" && /usr/bin/agvtool new-version -all $BUILD_NUMBER &> /dev/null) || failed "Failed setting build number"
+    (cd "$SRCROOT" && /usr/bin/agvtool new-version -all $BUILD_NUMBER > /dev/null) || failed "Failed setting build number"
 else
     echo "Skipping setting build number. Specify \$BUILD_NUMBER."
 fi
@@ -209,7 +209,7 @@ if [ -n "$JOB_URL" ] && [ -n "$CHANGELOG_FILE" ] && [ -n "$JENKINS_USER" ] && [ 
     LAST_SUCCESS_REV=$(curl -s --user $JENKINS_USER:$JENKINS_TOKEN "$BUILD_XML_URL" | grep "<lastBuiltRevision>" | sed 's|.*<lastBuiltRevision>.*<SHA1>\(.*\)</SHA1>.*<branch>.*|\1|')
     
     # All commit comments since the last successfully built revision
-    LOG=$(cd "$SRCROOT" && git log --pretty="$CHANGELOG_FORMAT" "$LAST_SUCCESS_REV..HEAD")
+    LOG=$(cd "$SRCROOT" && git log --pretty="$CHANGELOG_FORMAT" "${LAST_SUCCESS_REV}..HEAD")
     
     echo "$LOG" > "${OUTPUT}/${CHANGELOG_FILE}"
     echo "Wrote changelog to ${OUTPUT}/${CHANGELOG_FILE}"
@@ -250,6 +250,13 @@ else
     echo "Skipping Adhoc build"
 fi
 
+##################
+# RESTORE KEYCHAIN
+##################
+
+security list-keychains -d user -s "${HOME}/Library/Keychains/login.keychain"
+security default-keychain -d user -s "${HOME}/Library/Keychains/login.keychain"
+
 ###############
 # NUKE PROFILES
 ###############
@@ -266,13 +273,6 @@ for file in $PROFILES
 do
     rm $file
 done
-
-##################
-# RESTORE KEYCHAIN
-##################
-
-security list-keychains -d user -s "${HOME}/Library/Keychains/login.keychain"
-security default-keychain -d user -s "${HOME}/Library/Keychains/login.keychain"
 
 ############
 # S3 Archive
