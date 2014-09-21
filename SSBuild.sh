@@ -116,8 +116,8 @@ function xc_package
         
     XCODE_VERSION=`xcodebuild -version`
     XCODE_PATH=`xcode-select -p`
-    echo "Building with ${XCODE_VERSION} in ${XCODE_PATH}"
-    echo "Profile $UUID ($PROFILE)"
+    echo "Building with $XCODE_VERSION in $XCODE_PATH"
+    echo "Profile $UUID (${PROFILE})"
     
     cd "$BUILDROOT" && bundle exec xcodebuild \
     -workspace "$APPWORKSPACE" \
