@@ -91,13 +91,6 @@ function xc_package
 {
     echo "Building scheme \"$3\" => $1"
     
-    # unlock keychain
-    
-    echo "Unlocking keychain..."
-    security list-keychains -s "$BUILD_KEYCHAIN"
-    security default-keychain -d user -s "$BUILD_KEYCHAIN"
-    security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" &> /dev/null || failed "Failed unlocking keychain"
-    
     # Calculated paths
     
     APP_IPA="$1/$APPNAME.ipa"
@@ -106,13 +99,25 @@ function xc_package
     APP_DSYM_ZIP="$1/$APPNAME.dSYM.zip"
     PROFILE="$BUILDROOT/$4"
     
-    # xcodebuild
+    # Prepare UUID
     
     UUID=`uuid_from_profile "$PROFILE"`
     [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
     
-    echo "Building!"
-    xcodebuild -version
+    # Unlock keychain
+        
+    echo "Unlocking keychain..."
+    security list-keychains -d user -s "$BUILD_KEYCHAIN"
+    security default-keychain -d user -s "$BUILD_KEYCHAIN"
+    security set-keychain-settings -lut 7200 "$BUILD_KEYCHAIN"
+    security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
+    
+    # xcodebuild
+        
+    XCODE_VERSION=`xcodebuild -version`
+    XCODE_PATH=`xcode-select -p`
+    echo "Building with ${XCODE_VERSION} in ${XCODE_PATH}"
+    echo "Profile $UUID ($PROFILE)"
     
     cd "$BUILDROOT" && bundle exec xcodebuild \
     -workspace "$APPWORKSPACE" \
@@ -266,8 +271,8 @@ done
 # RESTORE KEYCHAIN
 ##################
 
-/usr/bin/security list-keychains -s ~/Library/Keychains/login.keychain
-/usr/bin/security default-keychain -d user -s ~/Library/Keychains/login.keychain
+security list-keychains -d user -s "${HOME}/Library/Keychains/login.keychain"
+security default-keychain -d user -s "${HOME}/Library/Keychains/login.keychain"
 
 ############
 # S3 Archive
