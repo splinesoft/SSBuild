@@ -107,6 +107,7 @@ function xc_package
     # Unlock keychain
         
     echo "Unlocking keychain..."
+    security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
     security list-keychains -d user -s "$BUILD_KEYCHAIN"
     security default-keychain -d user -s "$BUILD_KEYCHAIN"
     security set-keychain-settings -lut 7200 "$BUILD_KEYCHAIN"
