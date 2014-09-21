@@ -219,7 +219,8 @@ fi
 
 # cocoapods
 
-echo "Installing CocoaPods..."
+PODVERSION=`bundle exec pod --version`
+echo "Installing pods (CocoaPods v${PODVERSION})..."
 bundle exec pod install --project-directory="$SRCROOT" || failed "Failed installing CocoaPods"
 
 ###############
