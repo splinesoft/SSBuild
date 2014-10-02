@@ -35,8 +35,9 @@ CI means clicking one button and out pops your IPA, ready to be submitted to App
 * [CocoaPods](http://cocoapods.org) is the Objective-C package manager. You're using pods, right?
 * [xcpretty](https://github.com/supermarin/xcpretty) formats Apple's `xcodebuild` output, which is exceptionally verbose, into something much more human-readable.
 * Optional: [s3cmd](http://s3tools.org/s3cmd) uploads build artifacts to Amazon S3.
+* Optional: SSBuild allows you to use [xctool](https://github.com/facebook/xctool) as the build tool instead of xcodebuild and xcpretty.
 
-SSBuild will attempt to install `cupertino`, `cocoapods`, and `xcpretty` with the included `Gemfile`.
+SSBuild will attempt to install `cupertino`, `cocoapods`, and `xcpretty` with the included `Gemfile`. xctool is available via Homebrew: `brew update && brew install xctool`
 
 ## Building
 

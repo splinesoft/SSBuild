@@ -103,6 +103,7 @@ function xc_package
     
     UUID=`uuid_from_profile "$PROFILE"`
     [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
+    echo "Building with Provisiong Profile $UUID (${PROFILE})"
     
     # Unlock keychain
         
@@ -113,24 +114,45 @@ function xc_package
     security set-keychain-settings -lut 7200 "$BUILD_KEYCHAIN"
     security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
     
-    # xcodebuild
+    if [ "$BUILD_TOOL" == "xctool" ]; then
         
-    XCODE_VERSION=`xcodebuild -version`
-    XCODE_PATH=`xcode-select -p`
-    echo "Building with $XCODE_VERSION in $XCODE_PATH"
-    echo "Profile $UUID (${PROFILE})"
-    
-    cd "$BUILDROOT" && bundle exec xcodebuild \
-    -workspace "$APPWORKSPACE" \
-    -scheme "$3" \
-    clean build \
-    CONFIGURATION_BUILD_DIR="$1" \
-    PROVISIONING_PROFILE="$UUID" \
-    CODE_SIGN_IDENTITY="$CODESIGN_ID" \
-    OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
-    GCC_PREPROCESSOR_DEFINITIONS="\$(inherited) $2" | xcpretty -c || failed "Failed building"
-    
-    # IPA
+        # xctool
+        
+        XCTOOL_VERSION=`xctool -v`
+        echo "Building with xctool $XCTOOL_VERSION"
+        
+        xctool \
+        -workspace "$APPWORKSPACE" \
+        -scheme "$3" \
+        clean build \
+        -reporter pretty \
+        CONFIGURATION_BUILD_DIR="$1" \
+        PROVISIONING_PROFILE="$UUID" \
+        CODE_SIGN_IDENTITY="$CODESIGN_ID" \
+        OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
+        GCC_PREPROCESSOR_DEFINITIONS="\$(inherited) $2" || failed "Failed building"
+        
+    else
+        
+        # xcodebuild
+        
+        XCODE_VERSION=`xcodebuild -version`
+        XCODE_PATH=`xcode-select -p`
+        echo "Building with $XCODE_VERSION in $XCODE_PATH"
+        
+        cd "$BUILDROOT" && bundle exec xcodebuild \
+        -workspace "$APPWORKSPACE" \
+        -scheme "$3" \
+        clean build \
+        CONFIGURATION_BUILD_DIR="$1" \
+        PROVISIONING_PROFILE="$UUID" \
+        CODE_SIGN_IDENTITY="$CODESIGN_ID" \
+        OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
+        GCC_PREPROCESSOR_DEFINITIONS="\$(inherited) $2" | xcpretty -c || failed "Failed building"
+        
+    fi
+
+    # Package IPA
     
     echo "Packaging IPA..."
     xcrun -sdk iphoneos \
@@ -138,10 +160,10 @@ function xc_package
     -o "$APP_IPA" \
     --embed "$PROFILE" || failed "Failed packaging"
     
-    # ZIP dSYM
+    # Zip dSYM
     
     echo "Zipping .dSYM..."
-    /usr/bin/zip -qr "$APP_DSYM_ZIP" "$APP_DSYM"
+    zip -qr "$APP_DSYM_ZIP" "$APP_DSYM"
 }
 
 set -e
