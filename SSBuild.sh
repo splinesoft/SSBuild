@@ -118,8 +118,7 @@ function xc_package
         
         # xctool
         
-        XCTOOL_VERSION=`xctool -v`
-        echo "Building with xctool $XCTOOL_VERSION"
+        echo "Building with xctool $(xctool -v)"
         
         xctool \
         -workspace "$APPWORKSPACE" \
@@ -136,9 +135,7 @@ function xc_package
         
         # xcodebuild
         
-        XCODE_VERSION=`xcodebuild -version`
-        XCODE_PATH=`xcode-select -p`
-        echo "Building with $XCODE_VERSION in $XCODE_PATH"
+        echo "Building with $(xcodebuild -version) in $(xcode-select -p)"
         
         cd "$BUILDROOT" && bundle exec xcodebuild \
         -workspace "$APPWORKSPACE" \
@@ -242,8 +239,7 @@ fi
 
 # cocoapods
 
-PODVERSION=`bundle exec pod --version`
-echo "Installing pods (CocoaPods v${PODVERSION})..."
+echo "Installing pods (CocoaPods v$(bundle exec pod --version))..."
 bundle exec pod install --project-directory="$SRCROOT" || failed "Failed installing CocoaPods"
 
 ###############

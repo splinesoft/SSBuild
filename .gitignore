@@ -7,3 +7,5 @@
 *.config
 !MyApp.config
 
+# Chocolat tmp
+.fl*
