@@ -226,7 +226,7 @@ if [ -n "$JOB_URL" ] && [ -n "$CHANGELOG_FILE" ] && [ -n "$JENKINS_USER" ] && [ 
     BUILD_XML_URL="${JOB_URL}${LAST_SUCCESS_URL_SUFFIX}"
 
     # fetch the last successfully-built revision
-    LAST_SUCCESS_REV=$(set -o pipefail && curl -s --user ${JENKINS_USER}:${JENKINS_TOKEN} "$BUILD_XML_URL" | grep "<lastBuiltRevision>" | sed 's|.*<lastBuiltRevision>.*<SHA1>\(.*\)</SHA1>.*<branch>.*|\1|' || failed "Failed fetching last built revision from $BUILD_XML_URL")
+    LAST_SUCCESS_REV=$(set -o pipefail && curl -sk --user ${JENKINS_USER}:${JENKINS_TOKEN} "$BUILD_XML_URL" | grep "<lastBuiltRevision>" | sed 's|.*<lastBuiltRevision>.*<SHA1>\(.*\)</SHA1>.*<branch>.*|\1|' || failed "Failed fetching last built revision from $BUILD_XML_URL")
 
     # All commit comments since the last successfully built revision
     LOG=$(cd "$SRCROOT" && git log --pretty="$CHANGELOG_FORMAT" "${LAST_SUCCESS_REV}..HEAD")
