@@ -59,16 +59,18 @@ The `SSBuild.sh` script takes just one argument: the path to your `MyApp.config`
 
 ### Test Distributions
 
-MUDRammer's adhoc test builds are powered by [Crashlytics Beta](http://try.crashlytics.com/beta/). Jenkins automatically uploads an adhoc IPA to Crashlytics after each build:
+MUDRammer's adhoc test distributions and crash reporting is handled by [Hockey](http://hockeyapp.net/). Jenkins automatically uploads an adhoc IPA and dSYM.zip to Hockey after each build using [Shenzhen](https://github.com/nomad/shenzhen):
 
 ```bash
-$WORKSPACE/src/Mudrammer/Supporting*/Crashlytics.framework/submit \
-AN_API_KEY \
-A_BUILD_SECRET_KEY \
--ipaPath $WORKSPACE/output/adhoc/MUDRammer.ipa \
--groupAliases core \
--notesPath $WORKSPACE/output/changelog.txt \
--debug
+# Various parameters here provided by Jenkins at build time
+bundle exec ipa distribute:hockeyapp \
+--token MY_API_TOKEN \
+--identifier MY_APP_IDENTIFIER \
+--dsym "${WORKSPACE}/output/adhoc/MUDRammer.dSYM.zip" \
+--file "${WORKSPACE}/output/adhoc/MUDRammer.ipa" \
+--notify \
+--commit-sha ${GIT_COMMIT} \
+--build-server-url ${JOB_URL}
 ```
 
 ## Thanks!
