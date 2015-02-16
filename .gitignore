@@ -9,3 +9,7 @@
 
 # Chocolat tmp
 .fl*
+
+# Bundler
+.bundle
+vendor/bundle

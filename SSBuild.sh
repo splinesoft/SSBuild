@@ -135,7 +135,9 @@ function xc_package
         
         # xcodebuild
         
-        echo "Building with $(xcodebuild -version) in $(xcode-select -p)"
+        XCODE_VERSION=`xcodebuild -version`
+        XCODE_PATH=`xcode-select -p`
+        echo "Building with $XCODE_VERSION in $XCODE_PATH"
         
         cd "$BUILDROOT" && bundle exec xcodebuild \
         -workspace "$APPWORKSPACE" \
@@ -183,7 +185,8 @@ echo "Building $APPNAME in $SRCROOT."
 ###########
 
 echo "Installing bundle..."
-(cd $BUILDROOT && bundle install > /dev/null) || failed "Failed installing bundle. Try running 'sudo bundle install'"
+cd $BUILDROOT 
+bundle check --path=vendor/bundle || bundle install --jobs=4 --retry=2 --path=vendor/bundle
 
 # Remove output
 
