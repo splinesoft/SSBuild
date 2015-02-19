@@ -103,7 +103,7 @@ function xc_package
     
     UUID=`uuid_from_profile "$PROFILE"`
     [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
-    echo "Building with Provisiong Profile $UUID (${PROFILE})"
+    echo "Building with Provisioning Profile $UUID (${PROFILE})"
     
     # Unlock keychain
         
