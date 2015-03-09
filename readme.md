@@ -1,6 +1,6 @@
 # SSBuild
 
-[![Build Status](https://travis-ci.org/splinesoft/SSBuild.svg)](https://travis-ci.org/splinesoft/SSBuild) 
+[![Circle CI](https://circleci.com/gh/splinesoft/SSBuild.svg?style=svg&circle-token=e696a66ad338e33619ff8d773c03cb797dfe1971)](https://circleci.com/gh/splinesoft/SSBuild)
 
 A bash script that builds, codesigns, and archives your iOS app. Works great on its own or with a continuous integration tool like [Jenkins](http://jenkins-ci.org).
 
