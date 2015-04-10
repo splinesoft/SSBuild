@@ -163,6 +163,20 @@ function xc_package
     
     echo "Zipping .dSYM..."
     zip -qr "$APP_DSYM_ZIP" "$APP_DSYM"
+        
+    echo "Generating Symbols and repackaging IPA..."
+    
+    SYMBOLS="$(xcode-select -p)/usr/bin/symbols"
+    IPA_DIR="$1/IPA_TMP"
+    
+    unzip -q "$APP_IPA" -d "$IPA_DIR"
+    mkdir -p "$IPA_DIR/Symbols"
+    
+    $SYMBOLS -noTextInSOD -noDaemon -arch all \
+    -symbolsPackageDir "$IPA_DIR/Symbols" \
+    "$APP_APP/$APPNAME"
+    
+    cd "$IPA_DIR" && zip -qr "$APP_IPA" .
 }
 
 set -e

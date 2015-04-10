@@ -11,12 +11,13 @@ SSBuild performs these steps:
 3. Writes a changelog with the commit history since the last successful build (requires Jenkins)
 4. Installs your [CocoaPods](http://cocoapods.org)
 5. Unlocks the OS X keychain to prepare for code signing
-6. Builds, codesigns, and archives your app into an IPA
-7. Zips your app's .dSYM.
-8. (Optional) Repeats steps 5-7 for an Adhoc (Hockey/Crashlytics) build
-9. (Optional) Uploads important build artifacts -- your IPA(s) and .dSYM(s) -- to Amazon S3
-10. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Hockey or Crashlytics
-11. (Optional) Sends a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
+6. Generates `.symbols` files for iTunes Connect's new crash reporting and analysis features (requires Xcode 6.3)
+7. Builds, codesigns, and archives your app into an IPA
+8. Zips your app's .dSYM.
+9. (Optional) Repeats steps 5-8 for an Adhoc (Hockey/Crashlytics) build
+10. (Optional) Uploads important build artifacts -- your IPA(s) and .dSYM(s) -- to Amazon S3
+11. (Optional) Distributes your Adhoc build IPA and .dSYM to a beta service like Hockey or Crashlytics
+12. (Optional) Sends a push notification (powered by [Pushover](https://pushover.net/)) to your iOS devices with a success or failure message.
 
 SSBuild powers continuous integration, packaging, archiving, Adhoc distributions, and notifications for my app [MUDRammer - A Modern MUD Client for iPhone and iPad](https://itunes.apple.com/us/app/mudrammer-a-modern-mud-client/id597157072?mt=8).
 
