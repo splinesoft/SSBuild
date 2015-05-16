@@ -6,6 +6,7 @@
 *.keychain
 *.config
 !MyApp.config
+!Example.config
 
 # Chocolat tmp
 .fl*
@@ -13,3 +14,6 @@
 # Bundler
 .bundle
 vendor/bundle
+
+Example/Pods
+*.xcworkspace

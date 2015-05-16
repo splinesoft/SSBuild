@@ -1,0 +1,10 @@
+PODS:
+  - SSDataSources (0.8.5)
+
+DEPENDENCIES:
+  - SSDataSources
+
+SPEC CHECKSUMS:
+  SSDataSources: b01170fb23b82acf0649194e9189b0bf5f702681
+
+COCOAPODS: 0.37.1

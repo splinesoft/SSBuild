@@ -100,19 +100,26 @@ function xc_package
     PROFILE="$BUILDROOT/$4"
     
     # Prepare UUID
-    
-    UUID=`uuid_from_profile "$PROFILE"`
-    [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
-    echo "Building with Provisioning Profile $UUID (${PROFILE})"
+    UUID=""
+        
+    if [ -e "$PROFILE" ]; then
+        UUID=`uuid_from_profile "$PROFILE"`
+        [ -n "$UUID" ] || failed "Failed - missing provisioning profile UUID"
+        echo "Building with Provisioning Profile $UUID (${PROFILE})"
+    else
+        export SSBUILD_TEST=1
+    fi
     
     # Unlock keychain
-        
-    echo "Unlocking keychain..."
-    security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
-    security list-keychains -d user -s "$BUILD_KEYCHAIN"
-    security default-keychain -d user -s "$BUILD_KEYCHAIN"
-    security set-keychain-settings -lut 7200 "$BUILD_KEYCHAIN"
-    security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
+    
+    if [ -n "$BUILD_KEYCHAIN" ] && [ -n "$BUILD_KEYCHAIN_PW" ]; then
+        echo "Unlocking keychain..."
+        security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
+        security list-keychains -d user -s "$BUILD_KEYCHAIN"
+        security default-keychain -d user -s "$BUILD_KEYCHAIN"
+        security set-keychain-settings -lut 7200 "$BUILD_KEYCHAIN"
+        security unlock-keychain -p "$BUILD_KEYCHAIN_PW" "$BUILD_KEYCHAIN" || failed "Failed unlocking keychain"
+    fi
     
     if [ "$BUILD_TOOL" == "xctool" ]; then
         
@@ -139,15 +146,30 @@ function xc_package
         XCODE_PATH=`xcode-select -p`
         echo "Building with $XCODE_VERSION in $XCODE_PATH"
         
-        cd "$BUILDROOT" && bundle exec xcodebuild \
-        -workspace "$APPWORKSPACE" \
-        -scheme "$3" \
-        clean build \
-        CONFIGURATION_BUILD_DIR="$1" \
-        PROVISIONING_PROFILE="$UUID" \
-        CODE_SIGN_IDENTITY="$CODESIGN_ID" \
-        OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
-        GCC_PREPROCESSOR_DEFINITIONS="\$(inherited) $2" | xcpretty -c || failed "Failed building"
+        if [[ "$SSBUILD_TEST" = "1" ]]; then
+            
+            echo "** Test Build **"
+            
+            bundle exec xcodebuild \
+            -workspace "$APPWORKSPACE" \
+            -scheme "$3" \
+            clean build \
+            ONLY_ACTIVE_ARCH=NO -sdk iphonesimulator \
+            CONFIGURATION_BUILD_DIR="$1" | xcpretty -c || failed "Failed building"
+            
+        else
+        
+            cd "$BUILDROOT" && bundle exec xcodebuild \
+            -workspace "$APPWORKSPACE" \
+            -scheme "$3" \
+            clean build \
+            CONFIGURATION_BUILD_DIR="$1" \
+            PROVISIONING_PROFILE="$UUID" \
+            CODE_SIGN_IDENTITY="$CODESIGN_ID" \
+            OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
+            GCC_PREPROCESSOR_DEFINITIONS="\$(inherited) $2" | xcpretty -c || failed "Failed building"
+            
+        fi
         
     fi
 
