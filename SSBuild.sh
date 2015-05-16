@@ -150,12 +150,13 @@ function xc_package
             
             echo "** Test Build **"
             
-            bundle exec xcodebuild \
+            xcodebuild \
             -workspace "$APPWORKSPACE" \
+            -sdk iphonesimulator \
             -scheme "$3" \
             clean build \
-            ONLY_ACTIVE_ARCH=NO -sdk iphonesimulator \
-            CONFIGURATION_BUILD_DIR="$1" | xcpretty -c || failed "Failed building"
+            ONLY_ACTIVE_ARCH=YES \
+            CONFIGURATION_BUILD_DIR="$1" | bundle exec xcpretty -c || failed "Failed building"
             
         else
         
@@ -167,7 +168,7 @@ function xc_package
             PROVISIONING_PROFILE="$UUID" \
             CODE_SIGN_IDENTITY="$CODESIGN_ID" \
             OTHER_CODE_SIGN_FLAGS="--keychain $BUILD_KEYCHAIN" \
-            GCC_PREPROCESSOR_DEFINITIONS="\$(inherited) $2" | xcpretty -c || failed "Failed building"
+            GCC_PREPROCESSOR_DEFINITIONS="\$(inherited) $2" | bundle exec xcpretty -c || failed "Failed building"
             
         fi
         
