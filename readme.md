@@ -11,8 +11,8 @@ SSBuild performs these steps:
 3. Writes a changelog with the commit history since the last successful build (requires Jenkins)
 4. Installs your [CocoaPods](http://cocoapods.org)
 5. Unlocks the OS X keychain to prepare for code signing
-6. Generates `.symbols` files for iTunes Connect's new crash reporting and analysis features (requires Xcode 6.3)
-7. Builds, codesigns, and archives your app into an IPA
+6. Builds, codesigns, and archives your app into an IPA
+7. Generates `.symbols` files for the new crash reporting and analysis features in Xcode 6.3
 8. Zips your app's .dSYM.
 9. (Optional) Repeats steps 5-8 for an Adhoc (Hockey/Crashlytics) build
 10. (Optional) Uploads important build artifacts -- your IPA(s) and .dSYM(s) -- to Amazon S3
